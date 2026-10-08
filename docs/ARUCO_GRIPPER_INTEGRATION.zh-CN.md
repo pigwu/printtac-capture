@@ -50,7 +50,7 @@ K = [ fx  0  cx ]
 
 ```powershell
 python -m pip install -r requirements_visualizer.txt
-.\run_experiment_monitor_windows.ps1
+.\scripts\run_experiment_monitor_windows.ps1
 ```
 
 点击主窗口顶部 `Start Monitor`，再打开 `ArUco Gripper` 页签。
@@ -154,7 +154,7 @@ offset = 实际最小开口 - scale × 原始最小 X 宽度
 接收示例：
 
 ```powershell
-python aruco_robot_pose_receiver.py --bind 127.0.0.1 --port 5570 `
+python desktop/aruco_robot_pose_receiver.py --bind 127.0.0.1 --port 5570 `
   --min-gap-mm 0 --max-gap-mm 80 --max-step-mm 10
 ```
 

@@ -12,7 +12,7 @@ This offline pipeline aligns ARKit camera poses with robot end-effector poses an
 - `T_cam2gripper = ^gT_c`: fixed hand-eye extrinsic from camera to gripper
 - `T_base_world = ^bT_w`: session-level transform from ARKit world to robot base
 
-It is implemented in [pose_tracking_validator.py](../pose_tracking_validator.py).
+It is implemented in [desktop/pose_tracking_validator.py](../desktop/pose_tracking_validator.py).
 
 ## Core Principle
 
@@ -35,7 +35,7 @@ The difference from a chessboard-based pipeline is that we use ARKit pose output
 Example:
 
 ```powershell
-python pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
+python desktop/pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
 ```
 
 Outputs per run:

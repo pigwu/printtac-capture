@@ -52,13 +52,13 @@ Captures/<session>/
 电脑连接同一个 iPhone 热点，然后运行：
 
 ```powershell
-py pose_magnetic_receiver.py --phone-ip 172.20.10.1
+py desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
 macOS/Linux：
 
 ```bash
-python3 pose_magnetic_receiver.py --phone-ip 172.20.10.1
+python3 desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
 电脑每两秒向手机 UDP 5559 发送一次 `PC_HELLO`。APP 从数据包来源自动识别电脑地址，并把带左右标识的 APM2 组合数据发到电脑 UDP 5558。电脑端仍兼容旧 APM1，并把旧单板样本视为右侧数据。电脑断开时，APP 只停止实时转发，本地录制不会中断。
@@ -70,7 +70,7 @@ python3 pose_magnetic_receiver.py --phone-ip 172.20.10.1
 结束采集后，记录保留在 APP 的 `Past Records` 页面。电脑之后连接手机热点或同一局域网时：
 
 ```powershell
-py capture_upload_server.py --host 0.0.0.0 --port 8000
+py desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
 ```
 
 在 APP 中设置电脑 IP，再选择 `Past Records -> Upload Data`，即可上传 `pose.csv`、存在的 `magnetic_right.csv` / `magnetic_left.csv` 和 manifest；视频使用单独的 `Upload Video`。
@@ -80,7 +80,7 @@ py capture_upload_server.py --host 0.0.0.0 --port 8000
 没有真实板卡时，可以从另一台连接手机热点的电脑模拟发送磁数据：
 
 ```powershell
-py anyskin_hotspot_sender.py --host 172.20.10.1 --port 5557 --rate 100
+py desktop/anyskin_hotspot_sender.py --host 172.20.10.1 --port 5557 --rate 100
 ```
 
 测试左侧时把端口改为 `5562`。两侧联调需要同时启动两个发送进程。

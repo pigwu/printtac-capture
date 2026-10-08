@@ -1,0 +1,568 @@
+# ARPoseStreamer
+
+<div align="center">
+
+![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
+![Platform: iOS](https://img.shields.io/badge/platform-iOS-blue.svg)
+![Receiver: macOS%20%7C%20Windows](https://img.shields.io/badge/receiver-macOS%20%7C%20Windows-lightgrey.svg)
+
+**A lightweight iPhone ARKit app and cross-platform UDP receiver for streaming relative camera pose to a host machine.**
+
+**Language / 语言**: [English](../README.md) | [简体中文](README.zh-CN.md)
+
+![ARPoseStreamer Hero](assets/hero-banner.svg)
+
+</div>
+
+---
+
+<div align="center">
+
+## ✨ Key Features
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="assets/icon-3d-tracking.svg" width="120" alt="3D Tracking"/>
+      <h3>6-DOF Tracking</h3>
+      <p>Full position and orientation tracking using ARKit world tracking</p>
+    </td>
+    <td align="center" width="33%">
+      <img src="assets/icon-realtime-stream.svg" width="120" alt="Real-time Stream"/>
+      <h3>Real-time Stream</h3>
+      <p>60 FPS UDP streaming with minimal latency and packet loss</p>
+    </td>
+    <td align="center" width="33%">
+      <img src="assets/icon-cross-platform.svg" width="120" alt="Cross-platform"/>
+      <h3>Cross-platform</h3>
+      <p>Works on iPhone, macOS, and Windows with standalone executables</p>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+Built for robotics, teleoperation, computer vision, and rapid lab experiments where you want:
+
+- no rendering stack
+- no 3D scene content or heavy rendering logic
+- a simple iPhone-to-host pose stream
+- easy debugging on macOS or Windows
+- live camera preview background in the app
+
+## At A Glance
+
+```text
+iPhone (ARKit)
+    |
+    |  UDP pose packets
+    |  seq, time, x, y, z, qx, qy, qz, qw
+    v
+Mac / Windows receiver
+    |
+    +--> terminal inspection
+    +--> CSV logging
+    +--> custom robotics / CV pipeline
+```
+
+## Table Of Contents
+
+- [What It Does](#what-it-does)
+- [Offline Calibration](#offline-calibration)
+- [Why This Repo Exists](#why-this-repo-exists)
+- [Highlights](#highlights)
+- [Quick Start](#quick-start)
+- [Sample Receiver Output](#sample-receiver-output)
+- [Documentation](#documentation)
+- [Related Projects](#related-projects)
+- [Repository Structure](#repository-structure)
+- [Packet Format](#packet-format)
+- [iPhone Installation Model](#iphone-installation-model)
+- [Notes For Robotics / UMI-Style Pipelines](#notes-for-robotics--umi-style-pipelines)
+- [FAQ](#faq)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+- [Repository Metadata](#repository-metadata)
+- [License](#license)
+
+## What It Does
+
+ARPoseStreamer runs ARKit world tracking on an iPhone, converts the pose into a compact packet, and streams it over UDP to a receiver on your laptop or workstation.
+
+Each packet includes:
+
+- sequence number
+- sender timestamp
+- position: `x, y, z`
+- orientation quaternion: `qx, qy, qz, qw`
+
+Default frame convention:
+
+- right-handed
+- `Z-up`
+
+## Offline Calibration
+
+This repository now includes an offline calibration and validation pipeline for aligning ARKit camera poses with robot end-effector poses.
+
+What it estimates:
+
+- time synchronization (`time_shift`)
+- kinematic scale initialization (`initial_scale_factor`)
+- geometry-refined effective scale (`scale_factor`)
+- hand-eye extrinsic (`T_cam2gripper`)
+- session-level world alignment (`T_base_world`)
+- reconstruction, relative-motion, and cross-validation metrics
+
+What it is for:
+
+- validating ARKit pose quality against robot ground truth
+- converting ARKit camera pose into robot gripper pose
+- quantifying overfitting risk with block-wise cross-validation
+- generating plots and JSON artifacts for technical review
+
+Calibration docs:
+
+- [Calibration Overview (EN)](CALIBRATION_OVERVIEW.en.md)
+- [Calibration Overview (简体中文)](CALIBRATION_OVERVIEW.zh-CN.md)
+
+## Why This Repo Exists
+
+Many public iPhone pose streaming examples send large transforms or depend on heavier networking stacks. This repository is intentionally smaller and easier to adapt for lab use.
+
+It is especially useful when you want a clean building block for:
+
+- robot teleoperation pipelines
+- quick ARKit pose capture
+- UMI-style or VIO-style experiments
+- custom downstream receivers in Python, ROS2, or C++
+
+## Highlights
+
+- **3D Visualizer**: Real-time trajectory visualization with PyQt6 and OpenGL
+- **Tracking validator**: Dual-stream external camera rendering with adaptive sensor-to-ARKit calibration
+- **Offline validation**: Load ARKit and sensor CSV logs, save/load calibration JSON, and inspect timing drift
+- **Dual display modes**: View all history or last 5 seconds
+- **Time-gradient colors**: Trajectory colors fade from cyan (new) to red (old)
+- **Live monitoring**: FPS, packet count, dropped packets, latency display
+- **Cross-platform**: Works on macOS and Windows
+- ARKit world tracking
+- Optional wired sensor mirror for iOS-supported ExternalAccessory hardware
+- Resettable relative origin
+- 60 Hz oriented streaming pipeline
+- UDP output to a configurable host IP on port `5555`
+- Wired sensor UDP mirror to port `5556` for tracking validation
+- HTTP upload to a configurable host IP and upload port
+- Compact pose packets
+- Cross-platform Python receiver (CLI and GUI)
+- Local video recording to the app Documents folder
+- Settings panel for receiver and export configuration
+- Hidden side menu for operational actions
+- Capture history with renaming and re-upload prompts
+- Local pose CSV + manifest export for offline upload
+- One-button experiment capture for synchronized pose, magnetic sensor, MP4, and sender/receiver transport diagnostics
+- Integrated desktop experiment library with synchronized video/data replay and selectable latency, bitrate, FPS, and drop overlays
+- SwiftUI control panel on iPhone
+- XcodeGen project spec included
+
+## Quick Start
+
+### 3D Visualizer (Recommended)
+
+The project now includes a cross-platform 3D visualizer with real-time trajectory display and integrated upload server.
+
+#### Option 1: Download Pre-built Executable (No Python Required)
+
+For users who only need to receive pose data without building the iPhone app:
+
+**Windows:**
+1. Download `ARPose Visualizer.exe` from the [Releases](https://github.com/pigwu/ARPoseStreamer/releases) page
+2. Double-click to run (no installation needed)
+3. If Windows Defender shows a warning, click "More info" → "Run anyway"
+
+**macOS:**
+1. Download `ARPose Visualizer.app` from the [Releases](https://github.com/pigwu/ARPoseStreamer/releases) page
+2. Right-click the app and select "Open" (first time only)
+3. If macOS shows a security warning, go to System Preferences → Security & Privacy → "Open Anyway"
+
+The standalone executable includes all dependencies and doesn't require Python installation.
+
+#### Option 2: Run from Source (For Developers)
+
+**Install dependencies:**
+
+```bash
+pip install -r requirements_visualizer.txt
+```
+
+**Run the visualizer:**
+
+On macOS:
+```bash
+python3 desktop/udp_pose_visualizer.py
+```
+
+On Windows:
+```powershell
+py desktop/udp_pose_visualizer.py
+```
+
+Or use the launcher scripts:
+- macOS: `./scripts/run_visualizer_mac.sh`
+- Windows: `.\scripts\run_visualizer_windows.ps1`
+
+**Features:**
+- Real-time 3D trajectory visualization
+- Display modes: all history or last 5 seconds
+- Time-gradient colors (cyan → red)
+- Live stats: FPS, packet count, dropped packets, latency, uploads
+- Resettable coordinate origin
+- **Local IP display with copy button** (for iPhone setup)
+- **Integrated upload server** (no separate command needed)
+- **Checkbox controls** for UDP receiver and upload server
+- Dark theme UI
+
+**Building Standalone Executable:**
+
+You can build a standalone .exe (Windows) or .app (macOS) that doesn't require Python:
+
+```bash
+# Windows
+.\scripts\build_windows.ps1
+
+# macOS
+./scripts/build_macos.sh
+```
+
+See [BUILD.md](BUILD.md) for detailed instructions.
+
+### Command-Line Receiver
+
+For headless operation or scripting, use the command-line receiver:
+
+On macOS:
+
+```bash
+python3 desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+```
+
+or:
+
+```bash
+sh scripts/run_receiver_mac.sh
+```
+
+On Windows:
+
+```powershell
+py desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+```
+
+or:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run_receiver_windows.ps1
+```
+
+Optional packet logging:
+
+```bash
+python3 desktop/udp_pose_receiver.py --encoding binary --csv-log logs/pose.csv
+```
+
+### UDP Packet Loss Monitor
+
+For focused network diagnostics, use the standalone project:
+
+- [iPhone UDP Packet Loss Monitor](https://github.com/pigwu/iPhoneUDPPacketLossMonitor)
+
+This repository also keeps a local helper script for convenience:
+
+```powershell
+.\scripts\run_packet_loss_monitor_windows.ps1
+```
+
+The monitor listens on `0.0.0.0:5555` by default and uses the packet `sequence` field to show loss rate, missing packets, FPS, latency, jitter, duplicates, and out-of-order packets.
+
+For real uploads on macOS:
+
+```bash
+python3 desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
+```
+
+### Find The Host IP
+
+On macOS:
+
+```bash
+ipconfig getifaddr en0
+```
+
+On Windows:
+
+```powershell
+ipconfig
+```
+
+Use the IPv4 address of the machine running the receiver.
+
+For Windows uploads:
+
+```powershell
+py desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
+```
+
+For the integrated live monitor, grouped upload receiver, and synchronized experiment replay UI:
+
+```powershell
+py desktop/experiment_replay_ui.py --bind 0.0.0.0 --video-port 5560 --aruco-video-port 5561 --pose-port 5555 --combined-port 5558 --upload-port 8000 --phone-ip 172.20.10.1
+```
+
+Keep live streaming and sensor reception running as needed. The desktop live monitor camera selector can show either the unchanged 1x ARKit stream or the simultaneous 0.5x ultra-wide stream used by ArUco. On the iPhone, `Start Experiment` defines the shared time origin; `Stop & Save Experiment` finalizes both MP4 files and uploads the entire experiment into one timestamp-named folder such as `20260714-205900` under `uploads/`. The ultra-wide recording is stored there as `ultrawide_video.mp4`. The UUID remains inside the manifest and state files for reliable association. Source runs use the repository `uploads/` directory; the packaged Windows monitor uses an `uploads/` directory beside the EXE so experiments persist after the one-file app exits. After a complete upload, the monitor automatically creates `dataset.zarr` and processes the saved ultra-wide video into `aruco_gripper.csv` on background queues. The replay tab can switch between the saved 1x and 0.5x videos while synchronously inspecting the offline-stabilized gripper distance, pose, all five magnetic chips, sender statistics, receiver latency, clock offset, bitrate, FPS, drops, and packet counters.
+
+### Install The iPhone App
+
+Follow:
+
+- [INSTALL_IPHONE_APP.md](INSTALL_IPHONE_APP.md)
+
+Short version:
+
+1. Install Xcode on a Mac
+2. Install XcodeGen
+3. Run `xcodegen generate`
+4. Open the generated project
+5. Choose your Apple signing team
+6. Build to a connected iPhone
+
+### Start Streaming
+
+On the iPhone:
+
+1. Open the app
+2. Use the side menu button to open settings
+3. Enter the receiver IP and choose the receiver OS
+4. Start streaming or recording from the side menu
+5. Allow:
+   - camera access
+   - local network access
+
+The app opens with a live AR camera background, and the main dashboard overlays status, coordinates, and the recent 3D trajectory.
+
+If a host is reachable, pose is streamed in real time. If you are not connected, the app still saves pose logs locally so they can be exported later.
+Multiple recording or streaming segments are saved as separate capture records, named by time by default.
+For real file uploads, run the HTTP upload server on the host machine and use the `Past Records` page inside the app.
+
+### Verify
+
+The receiver should show:
+
+- increasing sequence numbers
+- near-zero drop count on a stable LAN
+- roughly 60 FPS receive rate
+- live pose values
+
+Note:
+
+`approx_lat` is only meaningful when the iPhone and receiver clocks are reasonably synchronized.
+
+Recorded videos are stored in the app Documents directory. With file sharing enabled, they can be accessed later through Files or Finder.
+Pose data is also saved as CSV plus a JSON manifest, so offline capture sessions can be uploaded later.
+
+## Sample Receiver Output
+
+```text
+192.168.1.15:53318 seq=   128 drop=  0 approx_lat=  14.72ms fps= 59.84
+x=+0.0124 y=-0.0317 z=+0.8421 qx=+0.0021 qy=-0.7063 qz=+0.0064 qw=+0.7079
+```
+
+What you usually want to see:
+
+- `seq` keeps increasing
+- `drop` stays near zero on a stable network
+- `fps` stays close to `60`
+- pose values change smoothly as the phone moves
+
+## Documentation
+
+Detailed docs:
+
+- [UMI gripper ArUco ID 0/1 integration (Chinese)](ARUCO_GRIPPER_INTEGRATION.zh-CN.md)
+- [Install the iPhone app](INSTALL_IPHONE_APP.md)
+- [Setup guide](SETUP.md)
+- [Architecture overview](ARCHITECTURE.md)
+- [Packet protocol](PROTOCOL.md)
+
+## Related Projects
+
+The tooling around ARPoseStreamer is split into small repositories so each part can be used on its own:
+
+- [iPhone UDP Packet Loss Monitor](https://github.com/pigwu/iPhoneUDPPacketLossMonitor): a focused desktop dashboard for measuring real-time UDP loss, FPS, jitter, latency, duplicates, and out-of-order packets from the iPhone stream.
+- [iPhone Trajectory Validator](https://github.com/pigwu/iPhoneTrajectoryValidator): an offline validation GUI for checking iPhone ARKit trajectory quality against reference robot logs with fixed `scale = 1.0`.
+
+Use this repository for the iPhone app, pose recording, UDP streaming, upload server, and integrated 3D visualizer. Use the standalone tools when you only need network diagnostics or offline trajectory validation.
+
+## Repository Structure
+
+- `ios/ARPoseUDPSender.swift`: ARKit + UDP sender core
+- `ios/ARPositionApp.swift`: SwiftUI app entry
+- `ios/ContentView.swift`: iPhone UI
+- `ios/AppSettingsView.swift`: settings sheet for receiver and export options
+- `ios/CaptureHistoryView.swift`: past records, rename, and re-upload UI
+- `ios/CaptureLibraryStore.swift`: persistent metadata for all capture sessions
+- `ios/CaptureUploadService.swift`: HTTP upload client for stored captures
+- `desktop/capture_upload_server.py`: cross-platform HTTP upload server for macOS/Windows
+- `scripts/run_upload_server_mac.sh`: macOS helper launcher for uploads
+- `scripts/run_upload_server_windows.ps1`: Windows helper launcher for uploads
+- `ios/PositionViewModel.swift`: app state and sender wiring
+- `ios/PoseDataSessionRecorder.swift`: local pose CSV + manifest recorder
+- `ios/Assets.xcassets`: app icon resources
+- `ios/Info.plist`: iOS permission strings
+- `project.yml`: XcodeGen project spec
+- `desktop/udp_pose_receiver.py`: Python UDP receiver (CLI) for macOS and Windows
+- `desktop/udp_pose_visualizer.py`: Python 3D visualizer (GUI) with real-time trajectory display
+- `desktop/udp_packet_loss_monitor.py`: standalone UDP packet-loss dashboard for real-time network diagnostics
+- `desktop/pose_tracking_validator.py`: Python dual-stream validator for ARKit and wired sensor pose streams
+- `requirements_visualizer.txt`: Python dependencies for the 3D visualizer
+- `scripts/run_receiver_mac.sh`: macOS helper launcher for CLI receiver
+- `scripts/run_receiver_windows.ps1`: Windows helper launcher for CLI receiver
+- `scripts/run_visualizer_mac.sh`: macOS helper launcher for 3D visualizer
+- `scripts/run_visualizer_windows.ps1`: Windows helper launcher for 3D visualizer
+- `scripts/run_packet_loss_monitor_windows.ps1`: Windows helper launcher for the packet-loss monitor
+- `INSTALL_IPHONE_APP.md`: iPhone installation guide
+- `ios/ARSessionVideoRecorder.swift`: local MP4 recording helper
+
+## Packet Format
+
+Default encoding is binary UDP, little-endian.
+
+Binary layout:
+
+1. `sequence` as `UInt32`
+2. `sender_time` as `Float64`
+3. `x` as `Float32`
+4. `y` as `Float32`
+5. `z` as `Float32`
+6. `qx` as `Float32`
+7. `qy` as `Float32`
+8. `qz` as `Float32`
+9. `qw` as `Float32`
+
+Total packet size:
+
+```text
+40 bytes
+```
+
+CSV mode is available for debugging:
+
+```text
+sequence,sender_time,x,y,z,qx,qy,qz,qw
+```
+
+## iPhone Installation Model
+
+This repository ships source code, not a universally installable iPhone binary.
+
+That means:
+
+- users can clone the repository and build it
+- users cannot install it like an Android APK directly from GitHub
+- iPhone installation requires local signing with Xcode, or a separate TestFlight / App Store distribution flow
+
+For most lab and personal workflows, the expected setup is:
+
+- build locally with Xcode
+- sign with your own Apple account
+- install to your own iPhone
+
+## Offline Capture Alignment
+
+When a recording session is captured locally, the app stores:
+
+- video as `mp4`
+- pose as `csv`
+- capture metadata as `json`
+
+The pose CSV includes frame timestamps and relative timestamps. The manifest also stores the video start offset relative to the pose session, so pose and video can be aligned during downstream processing.
+
+## Notes For Robotics / UMI-Style Pipelines
+
+- Public Stanford `iPhoneVIO` examples often send a full `4x4` transform over Socket.IO.
+- This repository is intentionally more compact and sends only the pose state that many downstream systems actually use.
+- If your downstream stack expects quaternion order `wxyz`, reorder from `xyzw`.
+- If your downstream stack expects ARKit's original `Y-up` frame, adjust the sender configuration accordingly.
+- The sequence field is included so downstream code can detect packet drops or reordering.
+
+## FAQ
+
+### Can I receive packets on Windows?
+
+Yes. The Python receiver works on both macOS and Windows.
+
+### Can I do real uploads over Bluetooth?
+
+Not in the Mac/Windows workflow used by this repository. For cross-platform host support, the app uses HTTP over the local network for uploads and UDP for real-time pose streaming.
+
+### Can I save data locally and upload it later?
+
+Yes. The app now stores pose CSV and capture metadata locally, and recorded videos can be exported later as well.
+
+### Are recorded videos time-aligned with pose data?
+
+Yes. The capture CSV stores frame and relative timestamps, and the manifest records the video start offset for downstream alignment.
+
+### Can I install the iPhone app without a Mac?
+
+Not in the normal local-development flow. Installing to iPhone requires Xcode signing on a Mac, unless you distribute through TestFlight or the App Store.
+
+### Can I use a personal Apple account?
+
+Usually yes, for local development and testing on your own device. Personal-team builds may expire after a short period.
+
+### Do I need the iPhone and host machine on the same network?
+
+For the default lab setup, yes. They should be on the same LAN or Wi-Fi so the iPhone can send UDP packets to the receiver.
+
+### Why does the receiver show approximate latency?
+
+The sender and receiver run on different clocks. The video debugger removes an estimated clock offset, preferring the low-overhead pose stream as its reference, then shows the remaining capture-to-display delay. The estimate is most useful with the pose port enabled and may read near zero for the fastest pose packets because true one-way delay cannot be measured exactly without synchronized clocks.
+
+## Contributing
+
+Contributions are welcome.
+
+If you want to improve the app, receiver, docs, or downstream integration:
+
+- open an issue describing the problem or idea
+- keep changes focused and easy to review
+- include repro steps for bugs
+- include validation notes for code changes
+
+See:
+
+- [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+## Code of Conduct
+
+Please read:
+
+- [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md)
+
+## Repository Metadata
+
+If you want the GitHub project page to look more polished, use:
+
+- [REPOSITORY_METADATA.md](REPOSITORY_METADATA.md)
+
+## Limitations
+
+- iPhone installation requires a Mac and Xcode
+- LAN UDP can drop packets
+- personal-team iOS builds may expire
+
+## License
+
+MIT

@@ -30,10 +30,10 @@ If the change is non-trivial, opening an issue first is helpful.
 
 The iPhone app is built from:
 
-- `ARPositionApp.swift`
-- `ContentView.swift`
-- `PositionViewModel.swift`
-- `ARPoseUDPSender.swift`
+- `ios/ARPositionApp.swift`
+- `ios/ContentView.swift`
+- `ios/PositionViewModel.swift`
+- `ios/ARPoseUDPSender.swift`
 
 The Xcode project is generated from:
 
@@ -49,7 +49,7 @@ xcodegen generate
 
 The host-side reference receiver is:
 
-- `udp_pose_receiver.py`
+- `desktop/udp_pose_receiver.py`
 
 Please keep it working on both:
 

@@ -1,18 +1,18 @@
 # COM 磁传感器对应关系工具
 
-`anyskin_serial_mapper.py` 用来直接查看串口磁数据，并判断 5 个物理磁传感器分别对应数据中的哪个通道。默认端口为 `COM9`、波特率为 `115200`。
+`desktop/anyskin_serial_mapper.py` 用来直接查看串口磁数据，并判断 5 个物理磁传感器分别对应数据中的哪个通道。默认端口为 `COM9`、波特率为 `115200`。
 
 ## 启动
 
 ```powershell
 pip install -r requirements_visualizer.txt
-.\run_anyskin_serial_mapper_windows.ps1
+.\scripts\run_anyskin_serial_mapper_windows.ps1
 ```
 
 也可以指定端口和波特率：
 
 ```powershell
-.\run_anyskin_serial_mapper_windows.ps1 -Port COM9 -Baud 115200
+.\scripts\run_anyskin_serial_mapper_windows.ps1 -Port COM9 -Baud 115200
 ```
 
 ## 判断对应关系

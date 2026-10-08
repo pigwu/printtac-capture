@@ -1,6 +1,6 @@
 # AnySkin UDP Monitor
 
-`anyskin_udp_monitor.py` 是一个电脑端 Wi-Fi/UDP 实时接收界面，用来接收 5 个磁传感器芯片的数据、显示实时曲线，并同步保存 CSV。
+`desktop/anyskin_udp_monitor.py` 是一个电脑端 Wi-Fi/UDP 实时接收界面，用来接收 5 个磁传感器芯片的数据、显示实时曲线，并同步保存 CSV。
 
 ## 运行
 
@@ -13,13 +13,13 @@ pip install -r requirements_visualizer.txt
 启动 UI：
 
 ```powershell
-python anyskin_udp_monitor.py --port 5555
+python desktop/anyskin_udp_monitor.py --port 5555
 ```
 
 也可以打开后自动开始监听：
 
 ```powershell
-python anyskin_udp_monitor.py --port 5555 --auto-start
+python desktop/anyskin_udp_monitor.py --port 5555 --auto-start
 ```
 
 默认绑定 `0.0.0.0:5555`。界面顶部会显示电脑当前 IP，Wi-Fi 板发送 UDP 时目标 IP 填这个电脑 IP，目标端口填 `5555`。

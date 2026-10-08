@@ -41,10 +41,10 @@ ARKit pose ----------------------->             `-> APM2 UDP 5558 when a PC is r
 
 Primary files:
 
-- `ARPoseUDPSender.swift`
-- `PositionViewModel.swift`
-- `ContentView.swift`
-- `ARPositionApp.swift`
+- `ios/ARPoseUDPSender.swift`
+- `ios/PositionViewModel.swift`
+- `ios/ContentView.swift`
+- `ios/ARPositionApp.swift`
 
 Responsibilities:
 
@@ -66,9 +66,9 @@ Responsibilities:
 
 Primary file:
 
-- `udp_pose_receiver.py`
-- `capture_upload_server.py`
-- `pose_magnetic_receiver.py`
+- `desktop/udp_pose_receiver.py`
+- `desktop/capture_upload_server.py`
+- `desktop/pose_magnetic_receiver.py`
 
 Responsibilities:
 

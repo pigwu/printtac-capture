@@ -9,13 +9,13 @@ Get the iPhone app streaming ARKit pose packets to a receiver on macOS or Window
 Run:
 
 ```bash
-python3 udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+python3 desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 Optional real upload server:
 
 ```bash
-python3 capture_upload_server.py --host 0.0.0.0 --port 8000
+python3 desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
 ```
 
 Find your IP:
@@ -29,13 +29,13 @@ ipconfig getifaddr en0
 Run:
 
 ```powershell
-py udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+py desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 Optional real upload server:
 
 ```powershell
-py capture_upload_server.py --host 0.0.0.0 --port 8000
+py desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
 ```
 
 Find your IP:
@@ -98,16 +98,16 @@ first valid sample arrives on each side.
 When a computer is available, connect it to the same hotspot and run:
 
 ```bash
-python3 pose_magnetic_receiver.py --phone-ip 172.20.10.1
+python3 desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
 On Windows:
 
 ```powershell
-py pose_magnetic_receiver.py --phone-ip 172.20.10.1
+py desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
-The computer sends `PC_HELLO` heartbeats to the app and receives combined APM2 packets on UDP `5558`. The receiver also accepts historical APM1 packets as right-board data. If the computer disconnects, local phone recording continues. Start `capture_upload_server.py` later and use `Past Records -> Upload Data` to transfer `pose.csv`, the available right/left magnetic CSV files, and the capture manifest.
+The computer sends `PC_HELLO` heartbeats to the app and receives combined APM2 packets on UDP `5558`. The receiver also accepts historical APM1 packets as right-board data. If the computer disconnects, local phone recording continues. Start `desktop/capture_upload_server.py` later and use `Past Records -> Upload Data` to transfer `pose.csv`, the available right/left magnetic CSV files, and the capture manifest.
 
 Personal Hotspot routing must be validated on the target iPhone and iOS version; the simulator cannot test this path.
 
@@ -126,7 +126,7 @@ The app has an optional wired sensor path for iOS-supported ExternalAccessory ha
 Expected setup:
 
 - the accessory supports iOS ExternalAccessory communication
-- `Info.plist` contains the accessory protocol string under `UISupportedExternalAccessoryProtocols`
+- `ios/Info.plist` contains the accessory protocol string under `UISupportedExternalAccessoryProtocols`
 - the app settings use the same accessory protocol string
 - the sensor writes one UTF-8 pose sample per line
 
@@ -139,12 +139,12 @@ t,x,y,z,qx,qy,qz,qw
 x,y,z,qx,qy,qz,qw
 ```
 
-The Settings screen can list visible iOS ExternalAccessory devices and their `protocolStrings`. Use that list to copy the real accessory protocol into the app setting and `Info.plist`.
+The Settings screen can list visible iOS ExternalAccessory devices and their `protocolStrings`. Use that list to copy the real accessory protocol into the app setting and `ios/Info.plist`.
 
 Start the validator on the host:
 
 ```bash
-python pose_tracking_validator.py --host 0.0.0.0 --arkit-port 5555 --sensor-port 5556
+python desktop/pose_tracking_validator.py --host 0.0.0.0 --arkit-port 5555 --sensor-port 5556
 ```
 
 Then on the iPhone:
@@ -170,7 +170,7 @@ Use `Apply adaptive calibration` to render and score the sensor stream after app
 The validator can also run offline from CSV logs:
 
 ```bash
-python pose_tracking_validator.py --arkit-csv pose.csv --sensor-csv sensor_pose.csv
+python desktop/pose_tracking_validator.py --arkit-csv pose.csv --sensor-csv sensor_pose.csv
 ```
 
 Use `Save Calibration` and `Load Calibration` in the validator to reuse a stable sensor-to-ARKit transform for the same hardware mounting.

@@ -1,6 +1,6 @@
 # Zarr Dataset Export
 
-`export_capture_to_zarr.py` converts one or more ARPoseStreamer capture folders into
+`desktop/export_capture_to_zarr.py` converts one or more ARPoseStreamer capture folders into
 a Zarr v2 dataset directory compatible with the observed `dataset.zarr` layout.
 
 ## Install Dependencies
@@ -19,7 +19,7 @@ The exporter requires `zarr`, `numcodecs`, `numpy`, `scipy`, and
 Run the UI:
 
 ```bash
-python zarr_exporter_ui.py
+python desktop/zarr_exporter_ui.py
 ```
 
 Then:
@@ -33,13 +33,13 @@ Then:
 ### Command Line
 
 ```bash
-python export_capture_to_zarr.py --capture "uploads/20260621-153256" --out "dataset.zarr" --overwrite
+python desktop/export_capture_to_zarr.py --capture "uploads/20260621-153256" --out "dataset.zarr" --overwrite
 ```
 
 Multiple captures can be exported into one dataset:
 
 ```bash
-python export_capture_to_zarr.py \
+python desktop/export_capture_to_zarr.py \
   --capture "uploads/session-a" \
   --capture "uploads/session-b" \
   --out "dataset.zarr" \
@@ -95,7 +95,7 @@ If downstream code insists on reading `data/action`, you can explicitly copy
 force/torque into the first six action dimensions:
 
 ```bash
-python export_capture_to_zarr.py --capture "uploads/session-a" --out "dataset.zarr" --action-source force --overwrite
+python desktop/export_capture_to_zarr.py --capture "uploads/session-a" --out "dataset.zarr" --action-source force --overwrite
 ```
 
 In that mode, `action[:, 0:6] = [fx, fy, fz, tx, ty, tz]` and `action[:, 6] = 0`.

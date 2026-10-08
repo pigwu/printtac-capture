@@ -100,13 +100,13 @@ pip install -r requirements_visualizer.txt
 macOS:
 
 ```bash
-python3 udp_pose_visualizer.py
+python3 desktop/udp_pose_visualizer.py
 ```
 
 Windows:
 
 ```powershell
-py udp_pose_visualizer.py
+py desktop/udp_pose_visualizer.py
 ```
 
 ### 命令行接收器
@@ -114,19 +114,19 @@ py udp_pose_visualizer.py
 macOS:
 
 ```bash
-python3 udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+python3 desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 Windows:
 
 ```powershell
-py udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+py desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 ### 离线标定命令
 
 ```powershell
-python pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
+python desktop/pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
 ```
 
 可选增强参数：
@@ -138,7 +138,7 @@ python pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-2
 示例：
 
 ```powershell
-python pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output --cross-validate-scale --cv-folds 5
+python desktop/pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output --cross-validate-scale --cv-folds 5
 ```
 
 ## 离线标定输出内容

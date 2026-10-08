@@ -12,7 +12,7 @@
 - `T_cam2gripper = ^gT_c`：相机到末端的固定手眼外参
 - `T_base_world = ^bT_w`：ARKit world 到机器人 base 的会话级变换
 
-核心实现位于 [pose_tracking_validator.py](../pose_tracking_validator.py)。
+核心实现位于 [desktop/pose_tracking_validator.py](../desktop/pose_tracking_validator.py)。
 
 ## 核心原理
 
@@ -35,7 +35,7 @@
 示例命令：
 
 ```powershell
-python pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
+python desktop/pose_tracking_validator.py --mode offline --arkit-csv "uploads\20260511-225434\pose_csv__pose.csv" --sensor-csv "uploads\end_effector_pose_log (1).csv" --output-dir offline_calibration_output
 ```
 
 每次运行会输出：
