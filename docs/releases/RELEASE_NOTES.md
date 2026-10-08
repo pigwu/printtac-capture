@@ -42,7 +42,7 @@
 
 ## Manual Release Steps
 
-1. Go to https://github.com/pigwu/ARPoseStreamer/releases/new
+1. Open the repository's Releases page and choose Draft a new release
 2. Tag version: `v1.0.0`
 3. Release title: `ARPose Visualizer v1.0.0`
 4. Copy the content above into the description

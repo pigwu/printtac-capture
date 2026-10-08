@@ -26,7 +26,7 @@ Then:
 
 1. Click `Add Capture Folder` and select one or more capture folders.
 2. Choose an output path such as `dataset.zarr`.
-3. Keep `Zero action` unless downstream code explicitly wants force copied into `action`.
+3. Select the action representation required by your downstream workflow; the exporter defaults to next-observation pose/gripper targets.
 4. Click `Convert`.
 5. Click `Open Output Folder` when the conversion finishes.
 
@@ -88,8 +88,7 @@ Video is decoded from MP4 into RGB frames. The MP4 itself is not embedded.
 - `magnet_xyz` exposes both boards to downstream evaluation as sensor sets 0
   (right) and 1 (left). Legacy single-board captures fill the left set with
   zeros and mark its sample count/validity false.
-- `action` is zero-filled by default because ARPoseStreamer does not capture true
-  7-DoF robot actions.
+- `action` defaults to the next sampled pose and gripper width (`next_obs`). These are demonstration-derived targets, rather than recorded robot control commands. Select `--action-source zero` for zero-filled placeholders.
 
 If downstream code insists on reading `data/action`, you can explicitly copy
 force/torque into the first six action dimensions:
@@ -99,3 +98,15 @@ python desktop/export_capture_to_zarr.py --capture "uploads/session-a" --out "da
 ```
 
 In that mode, `action[:, 0:6] = [fx, fy, fz, tx, ty, tz]` and `action[:, 6] = 0`.
+
+## Portable calibration lookup
+
+The optional default calibration is `config/offline_calibration_result.json` at the repository root, or beside a packaged executable's `config/` directory. If it is absent, pose export uses raw ARKit camera pose.
+
+To provide a calibration explicitly:
+
+```bash
+python arpose.py export-zarr --capture "uploads/session-a" --out "dataset.zarr" --eef-calibration-result "path/to/offline_calibration_result.json"
+```
+
+Use `--raw-iphone-pose` to bypass calibration. The selected pose source is recorded in the Zarr attributes.

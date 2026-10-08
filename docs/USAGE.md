@@ -178,12 +178,12 @@ The project now includes a cross-platform 3D visualizer with real-time trajector
 For users who only need to receive pose data without building the iPhone app:
 
 **Windows:**
-1. Download `ARPose Visualizer.exe` from the [Releases](https://github.com/pigwu/ARPoseStreamer/releases) page
+1. Build `ARPose Visualizer.exe` using the [build guide](BUILD.md), or use a supplied executable
 2. Double-click to run (no installation needed)
 3. If Windows Defender shows a warning, click "More info" → "Run anyway"
 
 **macOS:**
-1. Download `ARPose Visualizer.app` from the [Releases](https://github.com/pigwu/ARPoseStreamer/releases) page
+1. Build `ARPose Visualizer.app` using the [build guide](BUILD.md), or use a supplied application bundle
 2. Right-click the app and select "Open" (first time only)
 3. If macOS shows a security warning, go to System Preferences → Security & Privacy → "Open Anyway"
 
@@ -274,9 +274,7 @@ python3 desktop/udp_pose_receiver.py --encoding binary --csv-log logs/pose.csv
 
 ### UDP Packet Loss Monitor
 
-For focused network diagnostics, use the standalone project:
-
-- [iPhone UDP Packet Loss Monitor](https://github.com/pigwu/iPhoneUDPPacketLossMonitor)
+For focused network diagnostics, run `python arpose.py packet-loss` from the repository root.
 
 This repository also keeps a local helper script for convenience:
 
@@ -395,14 +393,9 @@ Detailed docs:
 - [Architecture overview](ARCHITECTURE.md)
 - [Packet protocol](PROTOCOL.md)
 
-## Related Projects
+## Related workflows
 
-The tooling around ARPoseStreamer is split into small repositories so each part can be used on its own:
-
-- [iPhone UDP Packet Loss Monitor](https://github.com/pigwu/iPhoneUDPPacketLossMonitor): a focused desktop dashboard for measuring real-time UDP loss, FPS, jitter, latency, duplicates, and out-of-order packets from the iPhone stream.
-- [iPhone Trajectory Validator](https://github.com/pigwu/iPhoneTrajectoryValidator): an offline validation GUI for checking iPhone ARKit trajectory quality against reference robot logs with fixed `scale = 1.0`.
-
-Use this repository for the iPhone app, pose recording, UDP streaming, upload server, and integrated 3D visualizer. Use the standalone tools when you only need network diagnostics or offline trajectory validation.
+The included desktop tools support focused network diagnostics (`python arpose.py packet-loss`) and offline trajectory validation (`python arpose.py validator`). See the [PrintTac project page](https://peppasaur.github.io/PrintTac/) for the wider hardware and robot-learning project.
 
 ## Repository Structure
 

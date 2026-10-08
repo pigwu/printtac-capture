@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="560" viewBox="0 0 1280 560" role="img" aria-labelledby="title description">
+  <title id="title">PrintTac Capture: touch, vision and motion recorded on an iPhone</title>
+  <desc id="description">Two PrintTac fingertips send magnetic measurements over Wi-Fi to an iPhone, which records video and ARKit pose locally. An optional desktop provides upload, replay, calibration and Zarr export.</desc>
+  <defs>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#D8D3CA"/>
+    </pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#E87346" stroke-width="1.5"/>
+    </marker>
+  </defs>
+  <rect width="1280" height="560" rx="24" fill="#F6F3ED"/>
+  <rect width="1280" height="560" rx="24" fill="url(#grid)" opacity="0.38"/>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="54" y="39" width="7" height="22" rx="3" fill="#E87346"/>
+    <text x="74" y="57" fill="#4B544C" font-size="15" font-weight="700" letter-spacing="2">PRINTTAC / CAPTURE</text>
+    <text x="54" y="115" fill="#202B2C" font-size="44" font-weight="700">Collect touch, vision &amp; motion.</text>
+    <text x="56" y="149" fill="#65706A" font-size="19">Phone-first multimodal demonstrations. From portable recording to reusable datasets.</text>
+
+    <rect x="54" y="188" width="278" height="262" rx="18" fill="#FFFFFF" stroke="#E0DBD2"/>
+    <text x="77" y="220" fill="#6D766F" font-size="12" letter-spacing="1.5">01 / SENSE</text>
+    <text x="77" y="251" fill="#202B2C" font-size="24" font-weight="700">PrintTac fingertips</text>
+    <g transform="translate(77 278)">
+      <rect width="102" height="84" rx="13" fill="#FCF1E9"/>
+      <rect x="14" y="16" width="74" height="44" rx="15" fill="none" stroke="#E87346" stroke-width="3"/>
+      <path d="M 27 38 Q 39 20 51 38 Q 63 56 75 38" fill="none" stroke="#E87346" stroke-width="3"/>
+      <text x="51" y="76" fill="#755443" font-size="11" text-anchor="middle">RIGHT</text>
+      <rect x="125" width="102" height="84" rx="13" fill="#FCF1E9"/>
+      <rect x="139" y="16" width="74" height="44" rx="15" fill="none" stroke="#E87346" stroke-width="3"/>
+      <path d="M 152 38 Q 164 20 176 38 Q 188 56 200 38" fill="none" stroke="#E87346" stroke-width="3"/>
+      <text x="176" y="76" fill="#755443" font-size="11" text-anchor="middle">LEFT</text>
+    </g>
+    <text x="77" y="393" fill="#56635D" font-size="15">Raw magnetic measurements</text>
+    <text x="77" y="420" fill="#879088" font-size="13">Optional boards · independent streams</text>
+
+    <path d="M 343 320 H 407" stroke="#E87346" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="377" y="291" fill="#7D685A" font-size="12" text-anchor="middle">Wi-Fi</text>
+    <text x="377" y="348" fill="#7D685A" font-size="12" text-anchor="middle">UDP</text>
+
+    <rect x="421" y="188" width="392" height="262" rx="18" fill="#202F2C"/>
+    <text x="445" y="220" fill="#ABBFB1" font-size="12" letter-spacing="1.5">02 / RECORD</text>
+    <text x="445" y="251" fill="#FFFFFF" font-size="24" font-weight="700">iPhone capture hub</text>
+    <rect x="445" y="279" width="78" height="114" rx="12" fill="none" stroke="#A3B9A9" stroke-width="2"/>
+    <rect x="473" y="285" width="23" height="4" rx="2" fill="#A3B9A9"/>
+    <path d="M 454 357 C 465 329 474 371 485 339 S 505 319 514 329" stroke="#EFA37B" stroke-width="2.5" fill="none"/>
+    <circle cx="484" cy="377" r="6" fill="#E87346"/>
+    <g fill="#E4EEE6" font-size="16">
+      <text x="545" y="296">RGB + ultra-wide video</text>
+      <text x="545" y="329">ARKit camera pose</text>
+      <text x="545" y="362">Right / left tactile logs</text>
+    </g>
+    <line x1="545" y1="379" x2="787" y2="379" stroke="#4B6054"/>
+    <circle cx="551" cy="404" r="4" fill="#C6DDAF"/>
+    <text x="564" y="409" fill="#C6DDAF" font-size="14">Local recording · no host required</text>
+
+    <path d="M 827 320 H 891" stroke="#E87346" stroke-width="2.5" stroke-dasharray="5 4" fill="none" marker-end="url(#arrow)"/>
+    <text x="861" y="291" fill="#7D685A" font-size="12" text-anchor="middle">Upload</text>
+    <text x="861" y="348" fill="#7D685A" font-size="12" text-anchor="middle">or live</text>
+
+    <rect x="904" y="188" width="322" height="262" rx="18" fill="#FFFFFF" stroke="#E0DBD2"/>
+    <text x="929" y="220" fill="#6D766F" font-size="12" letter-spacing="1.5">03 / PREPARE</text>
+    <text x="929" y="251" fill="#202B2C" font-size="24" font-weight="700">Desktop workspace</text>
+    <rect x="929" y="277" width="272" height="48" rx="10" fill="#F5F3EE"/>
+    <path d="M 943 301 L 951 288 L 963 312 L 975 294 L 988 301" fill="none" stroke="#799878" stroke-width="2"/>
+    <text x="1001" y="306" fill="#415449" font-size="16">Inspect &amp; replay</text>
+    <text x="929" y="359" fill="#56635D" font-size="16">ArUco aperture · calibration</text>
+    <rect x="929" y="380" width="272" height="43" rx="10" fill="#FCF1E9"/>
+    <text x="1065" y="407" fill="#B85B36" font-size="17" font-weight="700" text-anchor="middle">Export Zarr datasets</text>
+
+    <line x1="54" y1="483" x2="1226" y2="483" stroke="#DDD7CD"/>
+    <text x="55" y="520" fill="#68736B" font-size="15">RECORD LOCALLY</text>
+    <text x="446" y="520" fill="#68736B" font-size="15">UPLOAD &amp; REVIEW</text>
+    <text x="929" y="520" fill="#68736B" font-size="15">EXPORT FOR LEARNING</text>
+  </g>
+</svg>

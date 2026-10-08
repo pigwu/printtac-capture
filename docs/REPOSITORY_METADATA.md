@@ -1,35 +1,27 @@
-# Repository Metadata Suggestions
+# Repository metadata
 
-Use the following in the GitHub repository settings page to make the project easier to discover.
+## Repository name
 
-## Suggested Description
+`printtac-capture`
 
-Lightweight ARKit iPhone pose streamer with UDP output and a cross-platform macOS/Windows receiver for robotics and computer vision experiments.
+Display title: **PrintTac Capture**.
 
-## Suggested Topics
+## Description
 
-- arkit
-- ios
-- iphone
-- udp
-- robotics
-- computer-vision
-- teleoperation
-- pose-estimation
-- swiftui
-- ar
+Phone-first multimodal demonstration collection for PrintTac: iOS recording, tactile/vision/pose replay, calibration and Zarr export.
 
-## Suggested Social Preview / Banner Idea
+## Homepage
 
-Use a simple banner with:
+https://peppasaur.github.io/PrintTac/
 
-- title: `ARPoseStreamer`
-- subtitle: `ARKit pose streaming from iPhone to Mac / Windows over UDP`
-- small pipeline graphic:
-  - `iPhone -> UDP -> Host Receiver`
+## Topics
 
-## Suggested Screenshot Order For README Or Social Preview
+`printtac`, `tactile-sensing`, `robot-learning`, `demonstration-learning`, `umi`, `arkit`, `ios`, `multimodal`, `data-collection`, `zarr`
 
-1. iPhone app screen showing host IP and live coordinates
-2. Terminal receiver showing packet stream
-3. Optional architecture slide with packet fields
+## Social preview
+
+Use `docs/assets/printtac-capture.svg` as the source for a preview image. It describes the implemented capture-to-dataset workflow without author names, affiliations or personal contact details.
+
+## Naming compatibility
+
+The repository title describes its current role. The iOS Xcode target, Swift filenames, protocol identifiers and existing executable names retain their established names so existing build/install workflows continue to work.

@@ -13,6 +13,8 @@ import zarr
 from numcodecs import Blosc
 from scipy.spatial.transform import Rotation, Slerp
 
+from runtime_paths import get_app_base_dir
+
 
 IMAGE_SIZE = 224
 POSE_DIM = 6
@@ -28,9 +30,7 @@ STATIC_POS_THRESHOLD = 1e-4
 STATIC_ROT_THRESHOLD = 1e-3
 VIDEO_PANEL_WIDTH = 420
 ZARR_CHUNK_ROWS = 1024
-DEFAULT_EEF_CALIBRATION_RESULT = Path(
-    "/home/shuwang/CodeFile/umi_data/poser_transform/offline_calibration_result.json"
-)
+DEFAULT_EEF_CALIBRATION_RESULT = get_app_base_dir() / "config" / "offline_calibration_result.json"
 
 
 @dataclass
