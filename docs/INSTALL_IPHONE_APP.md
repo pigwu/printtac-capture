@@ -1,100 +1,62 @@
-# Install The iPhone App
+# Install PrintTac Capture on iPhone
 
-You need a Mac for the final iPhone install step because iOS apps must be built and signed with Xcode.
+The app requires an ARKit-capable iPhone running iOS 17 or newer, and a Mac with Xcode supporting the device's iOS version. Simultaneous primary/ultra-wide capture depends on the device's camera capabilities.
 
-## What I Already Prepared
-
-This repository already contains:
-
-- Swift source files for the app
-- `ios/Info.plist`
-- `project.yml` for generating an Xcode project with XcodeGen
-
-## On Your Mac
-
-### 1. Clone Or Copy The Repository To The Mac
-
-For example:
+## Get the current repository
 
 ```bash
-~/Desktop/Umi-app
+git clone https://github.com/pigwu/printtac-capture.git
+cd printtac-capture
 ```
 
-### 2. Install Xcode
+If you downloaded a ZIP, extract it and open Terminal in the directory containing `project.yml`. Its folder may be named `printtac-capture-main`. An existing checkout can keep its local directory name; use the current repository URL for its remote.
 
-Install Xcode from the Mac App Store, then open it once so it finishes setup.
+## Prepare Xcode
 
-### 3. Install XcodeGen
-
-If you use Homebrew:
+1. Install Xcode on the Mac and open it once to complete setup.
+2. Install XcodeGen, for example with Homebrew:
 
 ```bash
 brew install xcodegen
 ```
 
-### 4. Generate The Xcode Project
-
-In Terminal on the Mac:
+3. From the repository root, generate and open the current project:
 
 ```bash
-cd ~/Desktop/Umi-app
 xcodegen generate
+open PrintTacCapture.xcodeproj
 ```
 
-This should create:
+The generated project, target and scheme are **`PrintTacCapture`**. The installed home-screen name is **PrintTac Capture**. Use this generated project when following the current instructions.
+
+## Signing and device installation
+
+1. Select the `PrintTacCapture` project and `PrintTacCapture` target.
+2. Open **Signing & Capabilities** and select your Apple signing team.
+3. For a new installation, use a bundle identifier unique to your team. The source default is `com.example.PrintTacCapture`.
+4. Connect and trust the iPhone, enable Developer Mode if requested, and select it as the run destination.
+5. Run the `PrintTacCapture` scheme. Trust the developer profile in **Settings → General → VPN & Device Management** if required.
+6. Allow camera and local-network access when opening PrintTac Capture.
+
+An optional terminal build, after configuring signing, is:
 
 ```bash
-ARPoseStreamer.xcodeproj
+xcodebuild -project PrintTacCapture.xcodeproj -scheme PrintTacCapture -destination 'generic/platform=iOS' build
 ```
 
-### 5. Open The Project
+Personal-team signing can expire and require rebuilding. This repository supplies source code; an iPhone install still requires Apple signing, rather than an unsigned IPA or a Windows EXE.
 
-```bash
-open ARPoseStreamer.xcodeproj
-```
+## Upgrade an existing installation safely
 
-### 6. Set Signing
+**Keep the same bundle identifier and signing team as the installed app when you need to retain its captures and settings.** Copy the existing identifier into `PRODUCT_BUNDLE_IDENTIFIER` in `project.yml` before regenerating the project. The new default identifier creates a separate app sandbox; changing the display name alone does not migrate data between sandboxes.
 
-In Xcode:
+Upload or export important recordings before reinstalling. Install over the existing app with its original identifier; do not uninstall it first if you want its local recordings. Historical private preference keys are retained so an in-place upgrade can reuse settings. The new app writes `PrintTacCapture...` video names, while desktop tools continue to accept older recording names.
 
-1. Select the `ARPoseStreamer` project.
-2. Select the `ARPoseStreamer` target.
-3. Open `Signing & Capabilities`.
-4. Choose your Apple ID team.
-5. If needed, change the bundle identifier to something unique, for example:
+## First capture
 
-```text
-com.yourname.ARPoseStreamer
-```
+- Follow [network and sensor setup](SETUP.md) to connect the configured right/left boards to the phone hotspot.
+- Use **Start Experiment** and **Stop & Save Experiment** for local capture.
+- Open `python printtac.py monitor` on the computer when you want uploads, live monitoring or replay.
+- Upload saved experiments through **Past Records → Upload Data**.
 
-## On Your iPhone
-
-### 7. Prepare The Device
-
-1. Connect the iPhone to the Mac with a cable.
-2. Tap `Trust This Computer` on the iPhone if prompted.
-3. On iOS 16+, enable `Developer Mode` if prompted.
-
-### 8. Build And Install
-
-In Xcode:
-
-1. Choose your connected iPhone as the run destination.
-2. Press the Run button.
-3. The app will install on the iPhone.
-
-If this is your first time using a personal Apple ID for sideloading, you may need to trust the developer profile on the phone:
-
-`Settings > General > VPN & Device Management`
-
-## First Launch Permissions
-
-When you open the app, allow:
-
-- camera access
-- local network access
-
-## Important Notes
-
-- A free Apple ID usually works for direct personal-device installation, but the app signing may expire after 7 days.
-- Without a Mac, I can still prepare source code and project files, but I cannot complete the actual iPhone installation step from here.
+The `com.example.sensor.pose` accessory protocol is a hardware integration placeholder, not the app's bundle identifier. Keep it aligned with the actual accessory protocol when using a wired sensor; see [setup](SETUP.md).

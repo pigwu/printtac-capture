@@ -1,4 +1,6 @@
-# ARPoseStreamer
+# PrintTac Capture
+
+For the current phone-first capture workflow and installation, start with the [main README](../README.md). This guide provides detailed receiver, visualization and calibration references.
 
 <div align="center">
 
@@ -10,7 +12,7 @@
 
 **Language / 语言**: [English](../README.md) | [简体中文](README.zh-CN.md)
 
-![ARPoseStreamer Hero](assets/hero-banner.svg)
+![PrintTac Capture Hero](assets/printtac-capture.svg)
 
 </div>
 
@@ -89,7 +91,7 @@ Mac / Windows receiver
 
 ## What It Does
 
-ARPoseStreamer runs ARKit world tracking on an iPhone, converts the pose into a compact packet, and streams it over UDP to a receiver on your laptop or workstation.
+PrintTac Capture runs ARKit world tracking on an iPhone, converts the pose into a compact packet, and streams it over UDP to a receiver on your laptop or workstation.
 
 Each packet includes:
 
@@ -178,12 +180,12 @@ The project now includes a cross-platform 3D visualizer with real-time trajector
 For users who only need to receive pose data without building the iPhone app:
 
 **Windows:**
-1. Build `ARPose Visualizer.exe` using the [build guide](BUILD.md), or use a supplied executable
+1. Build `PrintTac Pose Visualizer.exe` using the [build guide](BUILD.md), or use a supplied executable
 2. Double-click to run (no installation needed)
 3. If Windows Defender shows a warning, click "More info" → "Run anyway"
 
 **macOS:**
-1. Build `ARPose Visualizer.app` using the [build guide](BUILD.md), or use a supplied application bundle
+1. Build `PrintTac Pose Visualizer.app` using the [build guide](BUILD.md), or use a supplied application bundle
 2. Right-click the app and select "Open" (first time only)
 3. If macOS shows a security warning, go to System Preferences → Security & Privacy → "Open Anyway"
 
@@ -274,7 +276,7 @@ python3 desktop/udp_pose_receiver.py --encoding binary --csv-log logs/pose.csv
 
 ### UDP Packet Loss Monitor
 
-For focused network diagnostics, run `python arpose.py packet-loss` from the repository root.
+For focused network diagnostics, run `python printtac.py packet-loss` from the repository root.
 
 This repository also keeps a local helper script for convenience:
 
@@ -395,12 +397,12 @@ Detailed docs:
 
 ## Related workflows
 
-The included desktop tools support focused network diagnostics (`python arpose.py packet-loss`) and offline trajectory validation (`python arpose.py validator`). See the [PrintTac project page](https://peppasaur.github.io/PrintTac/) for the wider hardware and robot-learning project.
+The included desktop tools support focused network diagnostics (`python printtac.py packet-loss`) and offline trajectory validation (`python printtac.py validator`). See the [PrintTac project page](https://peppasaur.github.io/PrintTac/) for the wider hardware and robot-learning project.
 
 ## Repository Structure
 
 - `ios/ARPoseUDPSender.swift`: ARKit + UDP sender core
-- `ios/ARPositionApp.swift`: SwiftUI app entry
+- `ios/PrintTacCaptureApp.swift`: SwiftUI app entry
 - `ios/ContentView.swift`: iPhone UI
 - `ios/AppSettingsView.swift`: settings sheet for receiver and export options
 - `ios/CaptureHistoryView.swift`: past records, rename, and re-upload UI

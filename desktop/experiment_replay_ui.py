@@ -111,7 +111,7 @@ PC_GENERATED_EXPERIMENT_FILES = {
     "zarr_state.json",
     GRIPPER_STATE_NAME,
 }
-COMBINED_ZARR_NAME = "arpose_all_source.zarr"
+COMBINED_ZARR_NAME = "printtac_all_source.zarr"
 COMBINED_ZARR_STATE_NAME = "combined_zarr_state.json"
 REMOTE_RECORDING_ACTIONS = frozenset({"START", "STOP", "STATUS"})
 REMOTE_RECORDING_RESULTS = frozenset({"OK", "REJECTED"})
@@ -195,6 +195,7 @@ def acquire_single_instance_mutex() -> tuple[bool, object | None]:
     kernel32.CreateMutexW.restype = ctypes.c_void_p
     kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
     kernel32.CloseHandle.restype = ctypes.c_bool
+    # Keep the historical lock name for cross-version single-instance safety.
     handle = kernel32.CreateMutexW(None, False, "Local\\ARPoseExperimentMonitor")
     if not handle:
         return True, None
@@ -222,6 +223,7 @@ def acquire_single_instance_mutex() -> tuple[bool, object | None]:
     kernel32.CreateMutexW.restype = ctypes.c_void_p
     kernel32.CloseHandle.argtypes = [ctypes.c_void_p]
     kernel32.CloseHandle.restype = ctypes.c_bool
+    # Keep the historical lock name for cross-version single-instance safety.
     handle = kernel32.CreateMutexW(None, False, "Local\\ARPoseExperimentMonitor")
     if not handle:
         return True, None
@@ -386,7 +388,7 @@ class CombinedZarrExportThread(QThread):
             attrs = make_zarr_attrs(self.eef_calibration_result, action_source="next_obs")
             attrs.update(
                 {
-                    "created_by": "ARPose Experiment Monitor Combined Export",
+                    "created_by": "PrintTac Capture Combined Export",
                     "rdp_source_zarr_schema_version": RDP_SOURCE_ZARR_SCHEMA_VERSION,
                     "source_directories": [dataset.directory.name for dataset in datasets],
                     "magnet_key": "magnet_xyz",
@@ -771,7 +773,7 @@ class VideoFilePlayback:
 class ExperimentMonitorWindow(QMainWindow):
     def __init__(self, args: argparse.Namespace) -> None:
         super().__init__()
-        self.setWindowTitle("ARPose Experiment Monitor & Replay")
+        self.setWindowTitle("PrintTac Capture & Replay")
         self.resize(1550, 980)
         self.args = args
         self.video_worker: VideoReceiverThread | None = None
@@ -2345,7 +2347,7 @@ def _relative_magnetic_magnitudes(rows: list[dict], chip: int) -> list[float]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Monitor and replay synchronized ARPose experiments.")
+    parser = argparse.ArgumentParser(description="Monitor and replay synchronized PrintTac experiments.")
     parser.add_argument("--bind", default="0.0.0.0")
     parser.add_argument("--video-port", type=int, default=5560)
     parser.add_argument("--aruco-video-port", type=int, default=5561)
@@ -2363,13 +2365,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     app = QApplication(sys.argv)
-    app.setApplicationName("ARPose Experiment Monitor & Replay")
+    app.setApplicationName("PrintTac Capture & Replay")
     acquired, mutex = acquire_single_instance_mutex()
     if not acquired:
         QMessageBox.warning(
             None,
             "监控程序已经在运行",
-            "检测到另一个 ARPose Experiment Monitor。请使用已有窗口，或先完全关闭它再重试。",
+            "检测到另一个 PrintTac Capture。请使用已有窗口，或先完全关闭它再重试。",
         )
         return 2
     try:

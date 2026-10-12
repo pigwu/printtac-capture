@@ -1049,7 +1049,7 @@ class MainWindow(QMainWindow):
         self.render_timer.start(33)  # ~30 FPS
 
     def init_ui(self):
-        self.setWindowTitle("ARPose Visualizer")
+        self.setWindowTitle("PrintTac Pose Visualizer")
         self.setGeometry(100, 100, 1280, 800)
 
         # Central widget
@@ -1304,12 +1304,12 @@ def check_dependencies():
         print("\nPlease install dependencies with:")
         print("  pip install -r requirements_visualizer.txt")
         print("\nOr run the dependency checker:")
-        print("  python arpose.py check-deps")
+        print("  python printtac.py check-deps")
         return False
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ARPose 3D Visualizer")
+    parser = argparse.ArgumentParser(description="PrintTac Pose Visualizer")
     parser.add_argument("--host", default="0.0.0.0", help="Host/IP to bind to")
     parser.add_argument("--port", type=int, default=5555, help="UDP port to bind to")
     parser.add_argument("--upload-port", type=int, default=8000, help="HTTP upload server port")

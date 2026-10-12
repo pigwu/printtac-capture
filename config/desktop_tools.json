@@ -1,0 +1,56 @@
+[
+  {
+    "tool": "monitor",
+    "name": "PrintTac Capture",
+    "entry": "experiment_replay_ui.py",
+    "collect": [
+      "av"
+    ],
+    "windows_asset": "PrintTac-Capture.exe"
+  },
+  {
+    "tool": "visualizer",
+    "name": "PrintTac Pose Visualizer",
+    "entry": "udp_pose_visualizer.py",
+    "windows_asset": "PrintTac-Pose-Visualizer.exe"
+  },
+  {
+    "tool": "validator",
+    "name": "PrintTac Tracking Validator",
+    "entry": "pose_tracking_validator.py",
+    "windows_asset": "PrintTac-Tracking-Validator.exe"
+  },
+  {
+    "tool": "packet-loss",
+    "name": "PrintTac Packet Loss Monitor",
+    "entry": "udp_packet_loss_monitor.py",
+    "windows_asset": "PrintTac-Packet-Loss-Monitor.exe"
+  },
+  {
+    "tool": "zarr-exporter",
+    "name": "PrintTac Zarr Exporter",
+    "entry": "zarr_exporter_ui.py",
+    "windows_asset": "PrintTac-Zarr-Exporter.exe"
+  },
+  {
+    "tool": "anyskin-monitor",
+    "name": "PrintTac AnySkin UDP Monitor",
+    "entry": "anyskin_udp_monitor.py",
+    "windows_asset": "PrintTac-AnySkin-UDP-Monitor.exe"
+  },
+  {
+    "tool": "anyskin-serial",
+    "name": "PrintTac AnySkin Serial Mapper",
+    "entry": "anyskin_serial_mapper.py",
+    "windows_asset": "PrintTac-AnySkin-Serial-Mapper.exe"
+  },
+  {
+    "tool": "video-debugger",
+    "name": "PrintTac Video Debugger",
+    "entry": "udp_video_debug_ui.py",
+    "collect": [
+      "av"
+    ],
+    "windows_asset": "PrintTac-Video-Debugger.exe"
+  }
+]

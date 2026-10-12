@@ -167,7 +167,7 @@ class AutoZarrExporter:
     def _ensure_worker_locked(self) -> None:
         if self._worker is not None and self._worker.is_alive():
             return
-        self._worker = threading.Thread(target=self._run, name="arpose-zarr-export", daemon=True)
+        self._worker = threading.Thread(target=self._run, name="printtac-zarr-export", daemon=True)
         self._worker.start()
 
     def _run(self) -> None:
@@ -215,7 +215,7 @@ class AutoZarrExporter:
                     "capture_id": capture_id,
                     "source_directory": directory.name,
                     "source_manifest": capture.manifest,
-                    "created_by": "ARPose Experiment Monitor",
+                    "created_by": "PrintTac Capture",
                     "rdp_source_zarr_schema_version": RDP_SOURCE_ZARR_SCHEMA_VERSION,
                     "magnet_key": "magnet_xyz",
                 }

@@ -1,86 +1,12 @@
-# Build script for ARPose desktop tools
-# Creates standalone executables for Windows
-
-$ErrorActionPreference = "Stop"
-$env:QT_API = "pyqt6"
-Set-Location (Split-Path -Parent $PSScriptRoot)
-
-# Install PyInstaller if not already installed
-Write-Host "Checking PyInstaller..."
-pip show pyinstaller > $null
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Installing PyInstaller..."
-    pip install pyinstaller
-}
-
-function Build-DesktopTool {
-    param(
-        [Parameter(Mandatory=$true)] [string] $Name,
-        [Parameter(Mandatory=$true)] [string] $EntryPoint,
-        [string[]] $ExtraArgs = @()
-    )
-
-    Write-Host "`nBuilding $Name..."
-    $arguments = @(
-        "--name", $Name,
-        "--clean",
-        "--specpath", "build/specs",
-        "--windowed",
-        "--onefile",
-        "--icon=ios/Assets.xcassets/AppIcon.appiconset/Icon-1024.png",
-        "--add-data", "requirements_visualizer.txt;.",
-        "--hidden-import=OpenGL",
-        "--hidden-import=OpenGL.GL",
-        "--hidden-import=OpenGL.GLU",
-        "--hidden-import=OpenGL.GLUT",
-        "--hidden-import=pyqtgraph.opengl",
-        "--exclude-module", "PyQt5",
-        "--exclude-module", "PySide2",
-        "--exclude-module", "PySide6",
-        "--exclude-module", "torch",
-        "--exclude-module", "pandas",
-        "--exclude-module", "matplotlib",
-        "--exclude-module", "IPython",
-        "--exclude-module", "jupyter",
-        "--exclude-module", "notebook",
-        "--exclude-module", "sympy",
-        "--exclude-module", "PIL",
-        "--exclude-module", "tkinter"
-    )
-
-    if ($ExtraArgs.Count -gt 0) {
-        $arguments += $ExtraArgs
-    }
-
-    $arguments += $EntryPoint
-    pyinstaller @arguments
-
-    if ($LASTEXITCODE -ne 0) {
-        throw "PyInstaller failed while building $Name"
-    }
-}
-
-# Build the executables
-Build-DesktopTool -Name "ARPose Visualizer" -EntryPoint "desktop/udp_pose_visualizer.py"
-Build-DesktopTool -Name "ARPose Tracking Validator" -EntryPoint "desktop/pose_tracking_validator.py"
-Build-DesktopTool -Name "ARPose Packet Loss Monitor" -EntryPoint "desktop/udp_packet_loss_monitor.py"
-Build-DesktopTool -Name "ARPose Zarr Exporter" -EntryPoint "desktop/zarr_exporter_ui.py"
-Build-DesktopTool -Name "AnySkin UDP Monitor" -EntryPoint "desktop/anyskin_udp_monitor.py"
-Build-DesktopTool -Name "AnySkin Serial Mapper" -EntryPoint "desktop/anyskin_serial_mapper.py"
-Build-DesktopTool -Name "ARPose Video Debugger" -EntryPoint "desktop/udp_video_debug_ui.py" -ExtraArgs @("--collect-all", "av")
-Build-DesktopTool -Name "ARPose Experiment Monitor" -EntryPoint "desktop/experiment_replay_ui.py" -ExtraArgs @(
-    "--collect-all", "av",
-    "--add-data", "config/umi_gripper_aruco.json;config"
+# Build current PrintTac desktop executables using the selected Python environment.
+param(
+    [ValidateSet("all", "monitor", "visualizer", "validator", "packet-loss", "zarr-exporter", "anyskin-monitor", "anyskin-serial", "video-debugger")]
+    [string]$Tool = "all",
+    [switch]$DryRun
 )
-
-Write-Host "`nBuild complete!"
-Write-Host "Executable locations:"
-Write-Host "  dist\ARPose Visualizer.exe"
-Write-Host "  dist\ARPose Tracking Validator.exe"
-Write-Host "  dist\ARPose Packet Loss Monitor.exe"
-Write-Host "  dist\ARPose Zarr Exporter.exe"
-Write-Host "  dist\AnySkin UDP Monitor.exe"
-Write-Host "  dist\AnySkin Serial Mapper.exe"
-Write-Host "  dist\ARPose Video Debugger.exe"
-Write-Host "  dist\ARPose Experiment Monitor.exe"
-Write-Host "`nYou can now run the application by double-clicking the .exe file"
+$ErrorActionPreference = "Stop"
+$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$BuildArguments = @((Join-Path $PSScriptRoot "build_desktop.py"), "--tool", $Tool)
+if ($DryRun) { $BuildArguments += "--dry-run" }
+python @BuildArguments
+if ($LASTEXITCODE -ne 0) { throw "PrintTac desktop build failed" }

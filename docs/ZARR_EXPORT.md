@@ -1,6 +1,6 @@
 # Zarr Dataset Export
 
-`desktop/export_capture_to_zarr.py` converts one or more ARPoseStreamer capture folders into
+`desktop/export_capture_to_zarr.py` converts one or more PrintTac Capture capture folders into
 a Zarr v2 dataset directory compatible with the observed `dataset.zarr` layout.
 
 ## Install Dependencies
@@ -106,7 +106,7 @@ The optional default calibration is `config/offline_calibration_result.json` at 
 To provide a calibration explicitly:
 
 ```bash
-python arpose.py export-zarr --capture "uploads/session-a" --out "dataset.zarr" --eef-calibration-result "path/to/offline_calibration_result.json"
+python printtac.py export-zarr --capture "uploads/session-a" --out "dataset.zarr" --eef-calibration-result "path/to/offline_calibration_result.json"
 ```
 
 Use `--raw-iphone-pose` to bypass calibration. The selected pose source is recorded in the Zarr attributes.

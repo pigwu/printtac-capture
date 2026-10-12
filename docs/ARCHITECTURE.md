@@ -2,7 +2,7 @@
 
 ## Overview
 
-ARPoseStreamer has three cooperating parts:
+PrintTac Capture has three cooperating parts:
 
 1. two optional Wi-Fi magnetic sensor boards
 2. iPhone capture gateway
@@ -44,7 +44,7 @@ Primary files:
 - `ios/ARPoseUDPSender.swift`
 - `ios/PositionViewModel.swift`
 - `ios/ContentView.swift`
-- `ios/ARPositionApp.swift`
+- `ios/PrintTacCaptureApp.swift`
 
 Responsibilities:
 

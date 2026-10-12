@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in improving ARPoseStreamer.
+Thanks for your interest in improving PrintTac Capture.
 
 This repository is meant to stay small, practical, and easy to adapt for lab and research workflows. Contributions that improve reliability, clarity, portability, and downstream usability are especially welcome.
 
@@ -30,7 +30,7 @@ If the change is non-trivial, opening an issue first is helpful.
 
 The iPhone app is built from:
 
-- `ios/ARPositionApp.swift`
+- `ios/PrintTacCaptureApp.swift`
 - `ios/ContentView.swift`
 - `ios/PositionViewModel.swift`
 - `ios/ARPoseUDPSender.swift`

@@ -66,7 +66,7 @@ struct ContentView: View {
                     .frame(maxHeight: .infinity, alignment: .bottom)
 
                 TopBar(
-                    title: "ARPoseStreamer",
+                    title: "PrintTac Capture",
                     onMenuTapped: {
                         withAnimation(.easeInOut(duration: 0.22)) {
                             isSidebarPresented.toggle()

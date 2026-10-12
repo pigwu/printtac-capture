@@ -101,7 +101,7 @@ final class ARSessionVideoRecorder {
     private var outputURL: URL?
     private var recordingStatus: VideoRecordingStatus = .idle
 
-    init(fileNamePrefix: String = "ARPoseStreamer", expectedFrameRate: Int = 60) {
+    init(fileNamePrefix: String = "PrintTacCapture", expectedFrameRate: Int = 60) {
         self.fileNamePrefix = fileNamePrefix
         self.expectedFrameRate = max(1, expectedFrameRate)
     }

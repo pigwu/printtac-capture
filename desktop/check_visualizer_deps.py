@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Dependency checker for ARPose Visualizer
+Dependency checker for PrintTac Pose Visualizer
 Checks if all required packages are installed and compatible
 """
 
@@ -17,7 +17,7 @@ def check_dependencies():
     }
 
     all_ok = True
-    print("Checking ARPose Visualizer dependencies...\n")
+    print("Checking PrintTac Pose Visualizer dependencies...\n")
 
     for name, module in deps.items():
         try:
@@ -31,7 +31,7 @@ def check_dependencies():
     print()
     if all_ok:
         print("[SUCCESS] All dependencies are installed!")
-        print("\nYou can now run: python arpose.py visualizer")
+        print("\nYou can now run: python printtac.py visualizer")
         return True
     else:
         print("[ERROR] Some dependencies are missing.")

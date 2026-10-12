@@ -1,15 +1,15 @@
-name: ARPoseStreamer
+name: PrintTacCapture
 
 options:
   createIntermediateGroups: true
 
 settings:
   base:
-    PRODUCT_BUNDLE_IDENTIFIER: com.example.ARPoseStreamer
+    PRODUCT_BUNDLE_IDENTIFIER: com.example.PrintTacCapture
     INFOPLIST_FILE: ios/Info.plist
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-    MARKETING_VERSION: 1.0
-    CURRENT_PROJECT_VERSION: 1
+    MARKETING_VERSION: 1.4
+    CURRENT_PROJECT_VERSION: 2
     SWIFT_VERSION: 5.9
     IPHONEOS_DEPLOYMENT_TARGET: 17.0
     TARGETED_DEVICE_FAMILY: 1
@@ -17,13 +17,13 @@ settings:
     CODE_SIGN_STYLE: Automatic
 
 targets:
-  ARPoseStreamer:
+  PrintTacCapture:
     type: application
     platform: iOS
     deploymentTarget: "17.0"
     sources:
       - path: ios/Assets.xcassets
-      - path: ios/ARPositionApp.swift
+      - path: ios/PrintTacCaptureApp.swift
       - path: ios/ContentView.swift
       - path: ios/ARCameraPreviewView.swift
       - path: ios/ARUltraWideFrameAccess.swift
@@ -46,9 +46,9 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
 
 schemes:
-  ARPoseStreamer:
+  PrintTacCapture:
     build:
       targets:
-        ARPoseStreamer: all
+        PrintTacCapture: all
     run:
       config: Debug

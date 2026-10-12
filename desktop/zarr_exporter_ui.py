@@ -1,3 +1,4 @@
+import argparse
 import os
 import subprocess
 import sys
@@ -78,7 +79,7 @@ class ExportWorker(QThread):
 
             self.log_message.emit(f"Writing Zarr dataset: {self.output_path}")
             attrs = make_zarr_attrs(self.eef_calibration_result, action_source=self.action_source)
-            attrs["created_by"] = "ARPose Zarr Exporter"
+            attrs["created_by"] = "PrintTac Zarr Exporter"
             write_zarr(self.output_path, episodes, attrs=attrs)
             total_frames = sum(len(episode.timestamp) for episode in episodes)
             self.log_message.emit(f"Done. episodes={len(episodes)} frames={total_frames}")
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.worker = None
 
-        self.setWindowTitle("ARPose Zarr Exporter")
+        self.setWindowTitle("PrintTac Zarr Exporter")
         self.resize(900, 640)
 
         self.capture_list = QListWidget()
@@ -131,11 +132,11 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(18, 18, 18, 18)
         layout.setSpacing(14)
 
-        title = QLabel("ARPose Zarr Exporter")
+        title = QLabel("PrintTac Zarr Exporter")
         title.setObjectName("TitleLabel")
         layout.addWidget(title)
 
-        subtitle = QLabel("Convert ARPoseStreamer capture folders into dataset.zarr format.")
+        subtitle = QLabel("Convert PrintTac Capture capture folders into dataset.zarr format.")
         subtitle.setObjectName("SubtitleLabel")
         layout.addWidget(subtitle)
 
@@ -364,6 +365,8 @@ def horizontal_rule():
 
 
 def main():
+    parser = argparse.ArgumentParser(description="PrintTac Zarr Exporter")
+    parser.parse_args()
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

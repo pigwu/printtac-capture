@@ -217,7 +217,7 @@ class MetricCard(QFrame):
 class AnySkinMonitorWindow(QMainWindow):
     def __init__(self, host: str, port: int, auto_start: bool = False):
         super().__init__()
-        self.setWindowTitle("AnySkin UDP Monitor")
+        self.setWindowTitle("PrintTac AnySkin UDP Monitor")
         self.resize(1420, 900)
         self.setMinimumSize(1120, 760)
         self.local_ips = get_local_ips()
@@ -251,7 +251,7 @@ class AnySkinMonitorWindow(QMainWindow):
 
         header = QHBoxLayout()
         title_box = QVBoxLayout()
-        title = QLabel("AnySkin UDP Monitor")
+        title = QLabel("PrintTac AnySkin UDP Monitor")
         title.setObjectName("WindowTitle")
         subtitle = QLabel(f"PC IP candidates for board: {', '.join(self.local_ips)} | UDP port {port}")
         subtitle.setObjectName("Subtitle")

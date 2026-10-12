@@ -1,92 +1,80 @@
-# Building Standalone Executable
+# Build PrintTac desktop executables
 
-This guide explains how to build standalone executables for the ARPose desktop tools that can be distributed without requiring Python installation.
+Build on the target operating system: Windows creates `.exe` files; macOS creates `.app` bundles. Python 3.10 or newer is required for source builds.
 
-## Prerequisites
+## Prepare the environment
 
-1. Python 3.8 or higher installed
-2. All dependencies installed: `pip install -r requirements_visualizer.txt`
-3. PyInstaller will be automatically installed by the build script
+Use one Python environment for dependency installation and building:
 
-Generated PyInstaller specs are stored under `build/specs/`; executables remain in `dist/`. Scripts resolve the repository from their own location.
+```bash
+python -m pip install -r requirements_visualizer.txt
+python -m pip install pyinstaller pillow
+```
 
-The build scripts force `QT_API=pyqt6` and exclude other Qt bindings so PyInstaller does not accidentally collect multiple Qt packages from a shared Python environment.
+On macOS use `python3`. A clean virtual environment is recommended. PyInstaller packages this environment; the recipient of a correctly built standalone executable does not need Python.
 
-## Building on Windows
+## Build on Windows
 
-1. Open PowerShell in the project directory
-2. Run the build script:
-   ```powershell
-   .\scripts\build_windows.ps1
-   ```
-3. The executables will be created at:
-   - `dist\ARPose Visualizer.exe`
-   - `dist\ARPose Tracking Validator.exe`
-   - `dist\ARPose Packet Loss Monitor.exe`
-   - `dist\ARPose Zarr Exporter.exe`
-   - `dist\AnySkin UDP Monitor.exe`
-   - `dist\AnySkin Serial Mapper.exe`
-4. You can distribute these .exe files
+From the repository root:
 
-## Building on macOS
+```powershell
+# Recommended experiment monitor only
+.\scripts\build_windows.ps1 -Tool monitor
 
-1. Open Terminal in the project directory
-2. Run the build script:
-   ```bash
-   ./scripts/build_macos.sh
-   ```
-3. The applications will be created at:
-   - `dist/ARPose Visualizer.app`
-   - `dist/ARPose Tracking Validator.app`
-   - `dist/ARPose Packet Loss Monitor.app`
-   - `dist/ARPose Zarr Exporter.app`
-   - `dist/AnySkin UDP Monitor.app`
-4. You can distribute these .app bundles
+# All eight desktop applications
+.\scripts\build_windows.ps1
 
-## Distribution
+# Validate source and packaging paths without building
+.\scripts\build_windows.ps1 -DryRun
+```
 
-### Windows
-- The .exe file is completely standalone
-- No Python installation required on target machine
-- File size: ~100-150 MB (includes Python runtime and all dependencies)
+## Build on macOS
 
-### macOS
-- The .app bundle is completely standalone
-- No Python installation required on target machine
-- File size: ~100-150 MB (includes Python runtime and all dependencies)
-- Note: Users may need to right-click and select "Open" the first time due to macOS security
+```bash
+# Recommended experiment monitor only
+bash scripts/build_macos.sh --tool monitor
+
+# All eight desktop applications
+bash scripts/build_macos.sh
+
+# Validate packaging commands
+bash scripts/build_macos.sh --dry-run
+```
+
+## Current output names
+
+The product list is defined once in `config/desktop_tools.json` and used by both platforms.
+
+| Tool | Windows (`dist/`) | macOS (`dist/`) |
+| --- | --- | --- |
+| `monitor` | `PrintTac Capture.exe` | `PrintTac Capture.app` |
+| `visualizer` | `PrintTac Pose Visualizer.exe` | `PrintTac Pose Visualizer.app` |
+| `validator` | `PrintTac Tracking Validator.exe` | `PrintTac Tracking Validator.app` |
+| `packet-loss` | `PrintTac Packet Loss Monitor.exe` | `PrintTac Packet Loss Monitor.app` |
+| `zarr-exporter` | `PrintTac Zarr Exporter.exe` | `PrintTac Zarr Exporter.app` |
+| `anyskin-monitor` | `PrintTac AnySkin UDP Monitor.exe` | `PrintTac AnySkin UDP Monitor.app` |
+| `anyskin-serial` | `PrintTac AnySkin Serial Mapper.exe` | `PrintTac AnySkin Serial Mapper.app` |
+| `video-debugger` | `PrintTac Video Debugger.exe` | `PrintTac Video Debugger.app` |
+
+Specs are stored in `build/specs/`, intermediate files in `build/pyinstaller/`, and distributable applications in `dist/`. Source, resource and icon paths are resolved from the repository root, even when the script is launched from a different directory.
+
+## Install a desktop application
+
+Download current assets from the repository's [Releases page](https://github.com/pigwu/printtac-capture/releases/latest), or copy the application you built locally. Use **PrintTac Capture** for the integrated monitor, upload receiver and replay workspace.
+
+Release assets use hyphens, for example `PrintTac-Capture.exe`, while local build output uses the spaced filenames in the table. They contain the same application.
+
+Keep the application in a writable directory because recorded experiments are saved in `uploads/` beside it. Close older monitors before launching a new one; they use the same network ports. Existing `uploads/` can remain alongside the new executable. Source runs continue to use the repository-root `uploads/`.
+
+For macOS, distribute a build created on macOS. Signing and notarization require your own Apple configuration. If the operating system rejects a downloaded application, verify its origin and signature; a source rebuild is also available.
 
 ## Troubleshooting
 
-### Build fails with "module not found"
-- Make sure all dependencies are installed: `pip install -r requirements_visualizer.txt`
-- Try reinstalling PyInstaller: `pip install --upgrade pyinstaller`
+- **Import or Qt binding failures:** build in the same environment used to install requirements. The builder selects PyQt6 and excludes conflicting Qt bindings.
+- **QtCore DLL errors in a mixed Conda environment:** the builder prioritizes Windows system libraries so an incompatible Conda ICU DLL cannot replace the Windows ICU API required by Qt. Use the provided builder instead of repackaging an old spec file.
+- **Missing sensor configuration:** both ArUco and ultra-wide configuration files are bundled. User calibration can still be selected separately.
+- **Large executable:** scientific, video and Qt dependencies are included; actual sizes vary by environment.
+- **An older EXE still shows the old name:** source changes do not modify already-built binaries. Use a newly built PrintTac executable. Historical release assets retain their original version names.
+- **Video decoder unavailable:** rebuild the monitor/video debugger with its manifest settings; the builder collects PyAV for those tools.
 
-### Executable is too large
-- This is normal - it includes the entire Python runtime
-- You can use `--onedir` instead of `--onefile` for faster startup (but multiple files)
-
-### macOS: "App is damaged and can't be opened"
-- This is a security warning for unsigned apps
-- Users should right-click the app and select "Open"
-- Or run: `xattr -cr "ARPose Visualizer.app"`
-
-### Windows: Antivirus flags the executable
-- This is a false positive common with PyInstaller
-- You can submit the file to your antivirus vendor for whitelisting
-- Or distribute the source code and let users run with Python
-
-## Advanced Options
-
-### Custom Icon
-Edit the build script and change the `--icon` parameter to your own .ico (Windows) or .icns (macOS) file.
-
-### Include Additional Files
-Use `--add-data` to include additional files:
-```
---add-data "myfile.txt;." (Windows)
---add-data "myfile.txt:." (macOS)
-```
-
-### Debug Mode
-Remove `--windowed` to see console output for debugging.
+The smaller visualizer-only environment is available through `.\scripts\build_clean.ps1` on Windows. It produces `PrintTac Pose Visualizer.exe`, rather than the integrated monitor.

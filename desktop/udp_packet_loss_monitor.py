@@ -186,7 +186,7 @@ class MetricCard(QFrame):
 class PacketLossMonitorWindow(QMainWindow):
     def __init__(self, host: str, port: int, encoding: str):
         super().__init__()
-        self.setWindowTitle("ARPoseStreamer UDP Packet Loss Monitor")
+        self.setWindowTitle("PrintTac Capture UDP Packet Loss Monitor")
         self.resize(1220, 820)
         self.receiver_thread = None
         self.local_ip = get_local_ip()
@@ -676,7 +676,7 @@ class PacketLossMonitorWindow(QMainWindow):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Desktop UDP packet-loss monitor for ARPoseStreamer.")
+    parser = argparse.ArgumentParser(description="Desktop UDP packet-loss monitor for PrintTac Capture.")
     parser.add_argument("--host", default="0.0.0.0", help="IP address to bind to.")
     parser.add_argument("--port", type=int, default=5555, help="UDP port to listen on.")
     parser.add_argument("--encoding", choices=("binary", "csv"), default="binary", help="Expected UDP packet encoding.")

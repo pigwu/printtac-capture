@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct ARPositionApp: App {
+struct PrintTacCaptureApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

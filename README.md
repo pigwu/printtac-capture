@@ -30,9 +30,11 @@ The [PrintTac project page](https://peppasaur.github.io/PrintTac/) introduces th
 
 ## Quick start
 
+On Windows, a current [release executable](https://github.com/pigwu/printtac-capture/releases/latest) can be run directly: choose **PrintTac-Capture.exe** for monitoring, uploads and replay. Use a writable folder and keep existing `uploads/` beside the executable. The source workflow below is for building the iPhone app and running tools with Python.
+
 ### 1. Prepare the phone
 
-Build and sign the iOS app on a Mac using Xcode and XcodeGen. Follow the [iPhone installation guide](docs/INSTALL_IPHONE_APP.md). The existing Xcode target remains `ARPoseStreamer`.
+Build and sign the iOS app on a Mac using Xcode and XcodeGen. Follow the [iPhone installation guide](docs/INSTALL_IPHONE_APP.md). The project, target and scheme are `PrintTacCapture`; the installed app is named PrintTac Capture.
 
 For tactile collection, connect the configured right/left sensor boards to the iPhone hotspot. Configure and check each board using the [magnetic capture guide](docs/HOTSPOT_MAGNETIC_CAPTURE.zh-CN.md). Pose/video recording also works with no magnetic boards connected.
 
@@ -42,7 +44,7 @@ Install dependencies from the repository root using Python 3.10 or newer:
 
 ```bash
 python -m pip install -r requirements_visualizer.txt
-python arpose.py monitor --phone-ip 172.20.10.1
+python printtac.py monitor --phone-ip 172.20.10.1
 ```
 
 `172.20.10.1` is the usual iPhone hotspot address. On a regular LAN, use the phone's actual IP. On macOS, use `python3`.
@@ -69,37 +71,37 @@ uploads/<experiment>/
 ### 4. Export a dataset
 
 ```bash
-python arpose.py export-zarr --capture "uploads/<experiment>" --out "dataset.zarr"
+python printtac.py export-zarr --capture "uploads/<experiment>" --out "dataset.zarr"
 ```
 
 See the [export guide](docs/ZARR_EXPORT.md) for calibration, field definitions and action targets. Raw ARKit pose is a camera trajectory; applying it as a gripper/robot pose requires the appropriate calibration. Raw magnetic measurements are tactile observations, rather than calibrated force/torque values. Exported next-observation action targets are derived from demonstrations.
 
 ## Choose a tool
 
-The shared entry point is `python arpose.py <tool>`. Use `--help` to inspect a tool's options, and run one listener per UDP port.
+The shared entry point is `python printtac.py <tool>`. Use `--help` to inspect a tool's options, and run one listener per UDP port.
 
 | Goal | Command |
 | --- | --- |
-| Live experiments, uploads and replay | `python arpose.py monitor` |
-| View only the 3D pose trajectory | `python arpose.py visualizer` |
-| Receive pose in a terminal | `python arpose.py receiver` |
-| Run only the HTTP upload server | `python arpose.py upload-server` |
-| Receive combined pose and tactile packets | `python arpose.py magnetic-receiver` |
-| Inspect video / packet loss | `python arpose.py video-debugger` / `packet-loss` |
-| Validate a recorded trajectory | `python arpose.py validator` |
-| Open the Zarr export window | `python arpose.py zarr-exporter` |
-| Configure serial sensors / track gripper aperture | `python arpose.py anyskin-serial` / `aruco-tracker` |
+| Live experiments, uploads and replay | `python printtac.py monitor` |
+| View only the 3D pose trajectory | `python printtac.py visualizer` |
+| Receive pose in a terminal | `python printtac.py receiver` |
+| Run only the HTTP upload server | `python printtac.py upload-server` |
+| Receive combined pose and tactile packets | `python printtac.py magnetic-receiver` |
+| Inspect video / packet loss | `python printtac.py video-debugger` / `packet-loss` |
+| Validate a recorded trajectory | `python printtac.py validator` |
+| Open the Zarr export window | `python printtac.py zarr-exporter` |
+| Configure serial sensors / track gripper aperture | `python printtac.py anyskin-serial` / `aruco-tracker` |
 
 ```bash
-python arpose.py --help
-python arpose.py monitor --help
+python printtac.py --help
+python printtac.py monitor --help
 ```
 
 ## Repository map
 
 ```text
 printtac-capture/
-├── arpose.py                   # shared desktop launcher
+├── printtac.py                 # shared desktop launcher
 ├── ios/                        # iPhone capture app and resources
 ├── desktop/                    # reception, replay and dataset processing
 ├── config/                     # sensor/camera/gripper calibration
@@ -129,6 +131,8 @@ python -m unittest discover -s tests -t .
 ```
 
 On a Mac, generate the iPhone project with `xcodegen generate` from the repository root. Build desktop executables with `.\scripts\build_windows.ps1` on Windows or `bash scripts/build_macos.sh` on macOS. See [contributing](CONTRIBUTING.md) for development guidance.
+
+Current installations use `PrintTacCapture.xcodeproj` and `python printtac.py`. The old `arpose.py` entry point still forwards commands. For an iPhone upgrade that retains recordings, reuse the installed app's bundle identifier and signing team; see the [upgrade instructions](docs/INSTALL_IPHONE_APP.md#upgrade-an-existing-installation-safely).
 
 ## License
 

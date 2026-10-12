@@ -1,12 +1,12 @@
-# ARPoseStreamer 中文文档
+# PrintTac Capture 中文文档
 
-> 对应英文主 README 的中文镜像版，帮助中文读者快速理解项目用途、安装方式、离线标定流程与使用边界。
+> 本页保留详细功能和离线标定参考。当前手机端多模态采集定位、安装步骤与入口请先阅读[中文首页](../README.zh-CN.md)。
 
 语言 / Language: [English README](../README.md) | [简体中文](README.zh-CN.md)
 
 ## 项目概览
 
-ARPoseStreamer 是一个轻量的 iPhone ARKit 位姿流采集与主机接收项目，主要能力包括：
+PrintTac Capture 是一个轻量的 iPhone ARKit 位姿流采集与主机接收项目，主要能力包括：
 
 - iPhone 端 ARKit 6-DoF 位姿流
 - macOS / Windows 主机接收与可视化
@@ -35,7 +35,7 @@ ARPoseStreamer 是一个轻量的 iPhone ARKit 位姿流采集与主机接收项
 
 ### 1. 实时位姿流
 
-ARPoseStreamer 在 iPhone 上运行 ARKit world tracking，把相机位姿编码成紧凑 UDP 包发送给主机。
+PrintTac Capture 在 iPhone 上运行 ARKit world tracking，把相机位姿编码成紧凑 UDP 包发送给主机。
 
 每个包包含：
 

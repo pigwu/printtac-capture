@@ -21,18 +21,18 @@ enum ReceiverPlatform: String, CaseIterable, Identifiable {
     var receiverCommand: String {
         switch self {
         case .macOS:
-            return "python3 udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary"
+            return "python3 printtac.py receiver --host 0.0.0.0 --port 5555 --encoding binary"
         case .windows:
-            return "py udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary"
+            return "python printtac.py receiver --host 0.0.0.0 --port 5555 --encoding binary"
         }
     }
 
     var uploadServerCommand: String {
         switch self {
         case .macOS:
-            return "python3 capture_upload_server.py --host 0.0.0.0 --port 8000"
+            return "python3 printtac.py upload-server --host 0.0.0.0 --port 8000"
         case .windows:
-            return "py capture_upload_server.py --host 0.0.0.0 --port 8000"
+            return "python printtac.py upload-server --host 0.0.0.0 --port 8000"
         }
     }
 
@@ -1444,6 +1444,7 @@ final class PositionViewModel: ObservableObject {
         return defaults.bool(forKey: key)
     }
 
+    // Persisted by earlier installs; retaining these private keys preserves upgrade settings.
     private static let hostIPKey = "ARPoseStreamer.hostIP"
     private static let hostPortKey = "ARPoseStreamer.hostPort"
     private static let uploadPortKey = "ARPoseStreamer.uploadPort"

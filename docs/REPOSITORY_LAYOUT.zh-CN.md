@@ -2,15 +2,15 @@
 
 ## 日常使用
 
-从仓库根目录运行 `python arpose.py monitor`，即可打开实验监控、上传和回放窗口。
-只查看位姿用 `python arpose.py visualizer`。
-其他功能见[中文首页](../README.zh-CN.md)，参数见 `python arpose.py <工具名> --help`。
+从仓库根目录运行 `python printtac.py monitor`，即可打开实验监控、上传和回放窗口。
+只查看位姿用 `python printtac.py visualizer`。
+其他功能见[中文首页](../README.zh-CN.md)，参数见 `python printtac.py <工具名> --help`。
 
 ## 修改代码时从哪里看
 
 | 功能 | iPhone：`ios/` | 电脑：`desktop/` |
 | --- | --- | --- |
-| App 入口和页面 | `ARPositionApp.swift`、`ContentView.swift`、`AppSettingsView.swift` | `experiment_replay_ui.py`、`udp_pose_visualizer.py` |
+| App 入口和页面 | `PrintTacCaptureApp.swift`、`ContentView.swift`、`AppSettingsView.swift` | `experiment_replay_ui.py`、`udp_pose_visualizer.py` |
 | ARKit 位姿与发送 | `PositionViewModel.swift`、`ARPoseUDPSender.swift` | `udp_pose_receiver.py` |
 | 视频发送与接收 | `ARLowLatencyVideoSender.swift`、`ARUltraWideFrameAccess.swift` | `udp_video_debug_ui.py` |
 | 双路磁传感器协议 | `MagneticSensorProtocol.swift`、`PoseMagneticPacket.swift`、`MagneticSensorHotspotGateway.swift` | `pose_magnetic_receiver.py` |
@@ -26,7 +26,7 @@
 ## 开发约定
 
 - 新的手机代码放入 `ios/`，同时更新根目录 `project.yml` 的 source 列表。
-- 新的电脑功能放入 `desktop/`；需要用户直接启动的工具在 `arpose.py` 注册。
+- 新的电脑功能放入 `desktop/`；需要用户直接启动的工具在 `printtac.py` 注册。
 - 启动与打包脚本放入 `scripts/`，通过脚本自身位置定位仓库。
 - 自动化测试放入 `tests/`，执行 `python -m unittest discover -s tests -t .`。
 - `scripts/test_upload.py` 是需要上传服务器的手动检查，不参加自动化测试。
@@ -40,7 +40,7 @@
 轨迹对齐小工具原来写死了示例文件名，现在通过参数指定数据：
 
 ```powershell
-python arpose.py align-trajectory --iphone-csv "uploads/实验/pose.csv" --robot-csv "机器人轨迹.csv"
+python printtac.py align-trajectory --iphone-csv "uploads/实验/pose.csv" --robot-csv "机器人轨迹.csv"
 ```
 
 从根目录执行 `xcodegen generate` 的方式保持一致；生成工程会引用 `ios/` 下的文件。

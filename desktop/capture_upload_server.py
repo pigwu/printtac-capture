@@ -424,7 +424,7 @@ class UploadHandler(BaseHTTPRequestHandler):
                 200,
                 {
                     "ok": True,
-                    "service": "ARPose experiment upload",
+                    "service": "PrintTac experiment upload",
                     "upload_path": "/upload",
                 },
             )
@@ -854,7 +854,7 @@ def create_upload_server(
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Receive uploaded ARPoseStreamer files over HTTP.")
+    parser = argparse.ArgumentParser(description="Receive uploaded PrintTac Capture files over HTTP.")
     parser.add_argument("--host", default="0.0.0.0", help="Host/IP to bind to.")
     parser.add_argument("--port", type=int, default=8000, help="HTTP port to bind to.")
     parser.add_argument("--out-dir", default=str(get_default_upload_dir()), help="Directory to store uploaded files.")
@@ -864,12 +864,12 @@ def main() -> None:
     UploadHandler.upload_root.mkdir(parents=True, exist_ok=True)
 
     console_print("=" * 70)
-    console_print("ARPoseStreamer Upload Server")
+    console_print("PrintTac Capture Upload Server")
     console_print("=" * 70)
     console_print(f"Server URL: http://{args.host}:{args.port}")
     console_print(f"Upload folder: {UploadHandler.upload_root}")
     console_print(f"iPhone setup:")
-    console_print(f"   1. Open ARPoseStreamer app")
+    console_print(f"   1. Open PrintTac Capture app")
     console_print(f"   2. Go to 'Past Records' page")
     console_print(f"   3. Select a recording and tap 'Upload'")
     console_print(f"   4. Enter server IP and port in app settings")

@@ -706,7 +706,7 @@ class VideoDebugWindow(QMainWindow):
         self.pose_latency_history: deque[tuple[float, float]] = deque()
         self.last_video_frame_id = -1
         self.last_pose_sequence = -1
-        self.setWindowTitle("ARPose Low-Latency Video Debugger")
+        self.setWindowTitle("PrintTac Video Debugger")
         self.resize(1320, 860)
 
         central = QWidget()
@@ -1093,7 +1093,7 @@ class VideoDebugWindow(QMainWindow):
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Debug viewer for ARPose low-latency H.264 video over UDP.")
+    parser = argparse.ArgumentParser(description="Debug viewer for PrintTac low-latency H.264 video over UDP.")
     parser.add_argument("--bind", default="0.0.0.0", help="Host/IP to bind to.")
     parser.add_argument("--video-port", type=int, default=5560, help="UDP video port to bind to.")
     parser.add_argument("--pose-port", type=int, default=5555, help="Optional pose UDP port to bind to. Use 0 to disable.")
@@ -1104,8 +1104,8 @@ def main() -> int:
     args = parse_args()
 
     app = QApplication(sys.argv)
-    app.setApplicationName("ARPose Low-Latency Video Debugger")
-    app.setOrganizationName("ARPoseStreamer")
+    app.setApplicationName("PrintTac Video Debugger")
+    app.setOrganizationName("PrintTac")
 
     if av is None:
         print("PyAV is required for udp_video_debug_ui.py")

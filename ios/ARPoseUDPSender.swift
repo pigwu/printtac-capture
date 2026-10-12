@@ -14,7 +14,7 @@ private struct UltraWideFrameData {
 private final class ExperimentRecordingContext {
     let videoRecorder = ARSessionVideoRecorder()
     let ultraWideVideoRecorder = ARSessionVideoRecorder(
-        fileNamePrefix: "ARPoseStreamer-UltraWide",
+        fileNamePrefix: "PrintTacCapture-UltraWide",
         expectedFrameRate: 10
     )
     let poseSessionRecorder = PoseDataSessionRecorder()

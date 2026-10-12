@@ -5,7 +5,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-import arpose
+import printtac
 import runtime_paths
 from capture_upload_server import get_default_upload_dir
 from udp_video_debug_ui import get_app_base_dir
@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 class RepositoryLayoutTests(unittest.TestCase):
     def test_all_registered_tools_exist(self):
-        for filename, _ in arpose.TOOLS.values():
+        for filename, _ in printtac.TOOLS.values():
             with self.subTest(tool=filename):
                 self.assertTrue((ROOT / "desktop" / filename).is_file())
 
@@ -33,21 +33,21 @@ class RepositoryLayoutTests(unittest.TestCase):
 
     def test_dispatch_preserves_tool_options_and_user_paths(self):
         args = ["validator", "--arkit-csv", "my experiment/pose.csv", "--time-shift", "-0.5", "--help"]
-        with patch.object(sys, "argv", ["arpose.py"]), patch.object(sys, "path", list(sys.path)), patch.object(arpose.runpy, "run_path") as run:
-            arpose.main(args)
+        with patch.object(sys, "argv", ["printtac.py"]), patch.object(sys, "path", list(sys.path)), patch.object(printtac.runpy, "run_path") as run:
+            printtac.main(args)
             entry = str(ROOT / "desktop/pose_tracking_validator.py")
             self.assertEqual(sys.argv, [entry, *args[1:]])
             run.assert_called_once_with(entry, run_name="__main__")
 
     def test_dispatch_rejects_unknown_tool_without_running_code(self):
-        with patch.object(arpose.runpy, "run_path") as run, patch("sys.stderr"), self.assertRaises(SystemExit) as error:
-            arpose.main(["unknown-tool"])
+        with patch.object(printtac.runpy, "run_path") as run, patch("sys.stderr"), self.assertRaises(SystemExit) as error:
+            printtac.main(["unknown-tool"])
         self.assertEqual(error.exception.code, 2)
         run.assert_not_called()
 
     def test_gui_only_help_does_not_open_a_window(self):
-        with patch.object(arpose.runpy, "run_path") as run, patch("sys.stdout"):
-            arpose.main(["zarr-exporter", "--help"])
+        with patch.object(printtac.runpy, "run_path") as run, patch("sys.stdout"):
+            printtac.main(["zarr-exporter", "--help"])
         run.assert_not_called()
 
     def test_project_sources_and_plist_exist(self):

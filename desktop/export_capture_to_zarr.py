@@ -102,7 +102,7 @@ class EEFCalibration:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Convert ARPoseStreamer capture folders into a dataset.zarr directory."
+        description="Convert PrintTac Capture folders into a dataset.zarr directory."
     )
     parser.add_argument(
         "--capture",
@@ -306,6 +306,10 @@ def discover_capture(directory: Path) -> CaptureInputs:
             "video__*.mp4",
             "video__*.mov",
             "video__*.m4v",
+            "PrintTacCapture*.mp4",
+            "PrintTacCapture*.mov",
+            "PrintTacCapture*.m4v",
+            # Historical phone recordings remain readable.
             "ARPoseStreamer*.mp4",
             "ARPoseStreamer*.mov",
             "ARPoseStreamer*.m4v",

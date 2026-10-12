@@ -1,50 +1,34 @@
-# ARPose Visualizer v1.0.0
+# PrintTac Capture v1.4.0
 
-## Features
+PrintTac Capture now uses consistent repository, installation, application and executable names across the iPhone and desktop workflows.
 
-- Real-time 3D trajectory visualization
-- Integrated upload server (no separate command needed)
-- Local IP display with copy button
-- Display modes: all history or last 5 seconds
-- Time-gradient colors (cyan → red)
-- Live stats: FPS, packet count, dropped packets, latency, uploads
-- Dark theme UI
+## Changes
 
-## Download
+- Rename the generated iOS project, target and scheme to `PrintTacCapture`, and the installed app to PrintTac Capture.
+- Introduce `python printtac.py` as the current desktop entry point; preserve the old command as a compatibility wrapper.
+- Share one manifest for the eight Windows/macOS desktop build targets and resource paths.
+- Update installation, signing, build, usage and upgrade documentation.
+- Preserve old recordings, saved preference keys and cross-version single-instance behavior.
 
-- **Windows**: Download `ARPose Visualizer.exe` (52MB)
-- **macOS**: Build from source using `./scripts/build_macos.sh`
+## Windows installation
 
-## Installation (Windows)
+Use `PrintTac-Capture.exe` for the integrated experiment monitor and replay workspace. Other PrintTac tools are listed in [BUILD.md](../BUILD.md). Place the application in a writable folder; experiments are saved in `uploads/` beside the executable.
 
-1. Download `ARPose Visualizer.exe`
-2. Double-click to run (no installation needed)
-3. If Windows Defender shows a warning, click "More info" → "Run anyway"
+These binaries replace older releases for the current workflow. Historical assets remain historical; changing their filenames would not update their code.
 
-## Usage
+## iPhone and macOS
 
-1. Check "Enable UDP Receiver" to receive pose data
-2. Check "Enable Upload Server" to receive file uploads from iPhone
-3. Copy the displayed local IP and enter it in the iPhone app settings
-4. Start streaming from iPhone
+Build on a Mac using the [current iPhone instructions](../INSTALL_IPHONE_APP.md) or [desktop build guide](../BUILD.md). Reuse the installed iPhone app's signing identifier if you need an in-place upgrade that retains local data.
 
-## Requirements
+## Release asset names
 
-- No Python installation required
-- Windows 10 or later
+- `PrintTac-Capture.exe`
+- `PrintTac-Pose-Visualizer.exe`
+- `PrintTac-Tracking-Validator.exe`
+- `PrintTac-Packet-Loss-Monitor.exe`
+- `PrintTac-Zarr-Exporter.exe`
+- `PrintTac-AnySkin-UDP-Monitor.exe`
+- `PrintTac-AnySkin-Serial-Mapper.exe`
+- `PrintTac-Video-Debugger.exe`
 
-## What's New
-
-- First standalone release
-- Optimized executable size (52MB vs 2.6GB)
-- Fixed upload server freeze issue
-- Added real-time upload count display
-
-## Manual Release Steps
-
-1. Open the repository's Releases page and choose Draft a new release
-2. Tag version: `v1.0.0`
-3. Release title: `ARPose Visualizer v1.0.0`
-4. Copy the content above into the description
-5. Upload file: `dist/ARPose Visualizer.exe`
-6. Click "Publish release"
+`SHA256SUMS.txt` records checksums for the Windows executables.

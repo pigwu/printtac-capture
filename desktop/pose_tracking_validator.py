@@ -2754,7 +2754,7 @@ class MainWindow(QMainWindow):
         self.run_offline_calibration_if_ready()
 
     def init_ui(self):
-        self.setWindowTitle("ARPose Tracking Validator")
+        self.setWindowTitle("PrintTac Tracking Validator")
         self.resize(1680, 900)
 
         root = QWidget()

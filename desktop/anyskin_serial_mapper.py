@@ -429,7 +429,7 @@ class SerialMapperWindow(QMainWindow):
             if windows_font.exists():
                 QFontDatabase.addApplicationFont(str(windows_font))
             app.setFont(QFont("Microsoft YaHei UI", 9))
-        self.setWindowTitle("磁传感器串口对应关系工具")
+        self.setWindowTitle("PrintTac AnySkin Serial Mapper")
         self.resize(1500, 920)
         self.setMinimumSize(1120, 760)
         self.reader: Optional[SerialReaderThread] = None

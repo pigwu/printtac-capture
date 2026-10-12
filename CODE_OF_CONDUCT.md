@@ -2,7 +2,7 @@
 
 ## Our Pledge
 
-We want ARPoseStreamer to be a welcoming, practical, and respectful project for researchers, students, developers, and hobbyists.
+We want PrintTac Capture to be a welcoming, practical, and respectful project for researchers, students, developers, and hobbyists.
 
 Contributors and maintainers are expected to help create an environment that is:
 

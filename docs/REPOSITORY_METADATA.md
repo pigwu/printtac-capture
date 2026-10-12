@@ -22,6 +22,8 @@ https://peppasaur.github.io/PrintTac/
 
 Use `docs/assets/printtac-capture.svg` as the source for a preview image. It describes the implemented capture-to-dataset workflow without author names, affiliations or personal contact details.
 
-## Naming compatibility
+## Current product names
 
-The repository title describes its current role. The iOS Xcode target, Swift filenames, protocol identifiers and existing executable names retain their established names so existing build/install workflows continue to work.
+Repository: `printtac-capture`. Display title: **PrintTac Capture**. The iOS project/target/scheme is `PrintTacCapture`; the entry point is `ios/PrintTacCaptureApp.swift`; the installed app is **PrintTac Capture**. The canonical desktop command is `python printtac.py`, and executable names are defined in `config/desktop_tools.json`.
+
+`arpose.py` remains a compatibility entry point. Private persisted preference keys, the cross-version monitor lock and old recording-name input patterns remain intentionally readable for upgrades. Historical release artifacts keep their original version names. See [iPhone installation](INSTALL_IPHONE_APP.md) for preserving the bundle identifier and local data during an upgrade.
