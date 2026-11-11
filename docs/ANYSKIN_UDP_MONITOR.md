@@ -4,22 +4,22 @@
 
 ## 运行
 
-先安装桌面工具依赖：
+先按[电脑端安装说明](INSTALL_DESKTOP.md)准备 Python 3.12 并安装：
 
 ```powershell
-pip install -r requirements_visualizer.txt
+py -3.12 scripts/setup_desktop.py
 ```
 
 启动 UI：
 
 ```powershell
-python desktop/anyskin_udp_monitor.py --port 5555
+.\.venv\Scripts\python.exe desktop/anyskin_udp_monitor.py --port 5555
 ```
 
 也可以打开后自动开始监听：
 
 ```powershell
-python desktop/anyskin_udp_monitor.py --port 5555 --auto-start
+.\.venv\Scripts\python.exe desktop/anyskin_udp_monitor.py --port 5555 --auto-start
 ```
 
 默认绑定 `0.0.0.0:5555`。界面顶部会显示电脑当前 IP，Wi-Fi 板发送 UDP 时目标 IP 填这个电脑 IP，目标端口填 `5555`。

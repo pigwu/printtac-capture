@@ -4,8 +4,10 @@
 
 ## 启动
 
+先按[电脑端安装说明](INSTALL_DESKTOP.md)准备 Python 3.12：
+
 ```powershell
-pip install -r requirements_visualizer.txt
+py -3.12 scripts/setup_desktop.py
 .\scripts\run_anyskin_serial_mapper_windows.ps1
 ```
 

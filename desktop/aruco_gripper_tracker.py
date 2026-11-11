@@ -339,9 +339,9 @@ def calculate_distance_calibration(
     if not all(math.isfinite(value) and value >= 0.0 for value in values):
         raise ValueError("Calibration distances must be non-negative finite values")
     if maximum_raw_m <= minimum_raw_m:
-        raise ValueError("最大点的原始标记距离必须大于最小点")
+        raise ValueError("The maximum raw marker distance must be greater than the minimum")
     if maximum_gap_m <= minimum_gap_m:
-        raise ValueError("最大实际开口必须大于最小实际开口")
+        raise ValueError("The maximum actual opening must be greater than the minimum")
     scale = (maximum_gap_m - minimum_gap_m) / (maximum_raw_m - minimum_raw_m)
     offset_m = minimum_gap_m - scale * minimum_raw_m
     if not math.isfinite(scale) or not math.isfinite(offset_m) or scale <= 0.0:
@@ -354,15 +354,15 @@ def summarize_cyclic_calibration(samples_m: list[float] | np.ndarray) -> CyclicC
     samples = np.asarray(samples_m, dtype=np.float64).reshape(-1)
     samples = samples[np.isfinite(samples)]
     if samples.size < 10:
-        raise ValueError("至少需要 10 个有效采样帧")
+        raise ValueError("At least 10 valid sample frames are required")
     if np.any(samples < 0.0):
-        raise ValueError("标定采样距离不能为负数")
+        raise ValueError("Calibration sample distances must not be negative")
 
     lower = float(np.percentile(samples, 5.0))
     upper = float(np.percentile(samples, 95.0))
     span = upper - lower
     if not math.isfinite(span) or span < 0.001:
-        raise ValueError("采集到的开合范围不足 1 mm")
+        raise ValueError("The recorded opening range is less than 1 mm")
 
     low_state_cut = lower + span * 0.25
     high_state_cut = upper - span * 0.25
@@ -382,7 +382,7 @@ def summarize_cyclic_calibration(samples_m: list[float] | np.ndarray) -> CyclicC
     low_extrema = [value for state, value in extreme_events if state < 0]
     high_extrema = [value for state, value in extreme_events if state > 0]
     if not low_extrema or not high_extrema:
-        raise ValueError("未同时采集到全闭和全开端点")
+        raise ValueError("Both fully closed and fully open endpoints must be recorded")
     minimum_raw_m = float(np.median(low_extrema))
     maximum_raw_m = float(np.median(high_extrema))
     cycle_count = max(0, (len(extreme_events) - 1) // 2)

@@ -48,10 +48,14 @@ K = [ fx  0  cx ]
 
 ## 启动
 
+先按[电脑端安装说明](INSTALL_DESKTOP.md)准备 Python 3.12。下面命令在仓库根目录执行：
+
 ```powershell
-python -m pip install -r requirements_visualizer.txt
-.\scripts\run_experiment_monitor_windows.ps1
+py -3.12 scripts/setup_desktop.py
+.\.venv\Scripts\python.exe printtac.py monitor
 ```
+
+下文 `python` 均指 `.venv` 中的解释器；macOS 使用 `./.venv/bin/python`。
 
 点击主窗口顶部 `Start Monitor`，再打开 `ArUco Gripper` 页签。
 
@@ -61,14 +65,14 @@ python -m pip install -r requirements_visualizer.txt
 
 ## 快捷两点标定
 
-1. 让 0.5× 画面同时看到 ID 0、1。如果显示 `marker_depth_out_of_range`，打开 `ArUco Gripper`，点击“使用当前深度并应用”。程序会用当前两个深度的中点作为标称深度，并自动留出至少 `±20 mm` 余量。
+1. 让 0.5× 画面同时看到 ID 0、1。如果显示 `marker_depth_out_of_range`，打开 `ArUco Gripper`，点击 **Use Current Depth and Apply**。程序会用当前两个深度的中点作为标称深度，并自动留出至少 `±20 mm` 余量。
 2. 用卡尺填写最小实际开口；夹持面完全接触时可填 `0 mm`。
 3. 用卡尺填写最大实际开口。
-4. 夹爪保持在最小开口约 1 秒，点击“记录当前最小点”。
-5. 夹爪保持在最大开口约 1 秒，点击“记录当前最大点”。
-6. 点击“完成：保存并应用标定”。
+4. 夹爪保持在最小开口约 1 秒，点击 **Capture Minimum**。
+5. 夹爪保持在最大开口约 1 秒，点击 **Capture Maximum**。
+6. 点击 **Finish: Save and Apply Calibration**。
 
-快捷记录会取最近约 1 秒稳定帧的中位数；如果仍在移动或有效帧不足，UI 会提示保持不动后重试。原来的至少 5 次连续开合稳健采集仍保留在“可选：显示连续开合稳健采集”中，不再是必需步骤。
+快捷记录会取最近约 1 秒稳定帧的中位数；如果仍在移动或有效帧不足，UI 会提示保持不动后重试。原来的至少 5 次连续开合稳健采集仍保留在 **Optional: Record open/close cycles for robust calibration** 中，不再是必需步骤。
 
 计算公式：
 

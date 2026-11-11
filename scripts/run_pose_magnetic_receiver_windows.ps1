@@ -22,14 +22,6 @@ if ($OutputDirectory) {
     $ReceiverArguments += @("--output-dir", $OutputDirectory)
 }
 
-if (Get-Command py -ErrorAction SilentlyContinue) {
-    & py @ReceiverArguments
-    exit $LASTEXITCODE
-}
-if (Get-Command python -ErrorAction SilentlyContinue) {
-    & python @ReceiverArguments
-    exit $LASTEXITCODE
-}
-
-Write-Error "Python launcher not found. Install Python 3 first."
-exit 1
+. (Join-Path $PSScriptRoot "desktop_python.ps1")
+& $PrintTacPython @ReceiverArguments
+exit $LASTEXITCODE

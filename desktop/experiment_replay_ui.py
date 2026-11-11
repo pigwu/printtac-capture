@@ -923,7 +923,7 @@ class ExperimentMonitorWindow(QMainWindow):
             video_form.addRow(label, value)
         side.addWidget(video_box)
 
-        aruco_box = QGroupBox("ArUco 夹爪逐帧测距")
+        aruco_box = QGroupBox("ArUco Gripper Measurement")
         aruco_form = QFormLayout(aruco_box)
         self.live_aruco_state = QLabel("Disabled / waiting")
         self.live_aruco_ids = QLabel("--")
@@ -932,12 +932,12 @@ class ExperimentMonitorWindow(QMainWindow):
         self.live_aruco_calibrated_distance = QLabel("--")
         self.live_aruco_filtered_distance = QLabel("--")
         for label, value in [
-            ("状态", self.live_aruco_state),
-            ("检测 ID", self.live_aruco_ids),
-            ("标记深度", self.live_aruco_depth),
-            ("相机 X 轴原始宽度", self.live_aruco_raw_distance),
-            ("校准后夹爪开口", self.live_aruco_calibrated_distance),
-            ("滤波后夹爪开口", self.live_aruco_filtered_distance),
+            ("Status", self.live_aruco_state),
+            ("Detected IDs", self.live_aruco_ids),
+            ("Marker depth", self.live_aruco_depth),
+            ("Raw camera X width", self.live_aruco_raw_distance),
+            ("Calibrated opening", self.live_aruco_calibrated_distance),
+            ("Filtered opening", self.live_aruco_filtered_distance),
         ]:
             value.setWordWrap(True)
             aruco_form.addRow(label, value)
@@ -1212,7 +1212,7 @@ class ExperimentMonitorWindow(QMainWindow):
             aruco_config = self.aruco_panel.current_config()
         except Exception as exc:
             aruco_config = None
-            self.aruco_panel.config_status.setText(f"配置无效，ArUco 未启动：{exc}")
+            self.aruco_panel.config_status.setText(f"Invalid configuration; ArUco did not start: {exc}")
             self.aruco_panel.config_status.setStyleSheet("color:#c62828;")
 
         self.video_worker = VideoReceiverThread(
@@ -1458,7 +1458,7 @@ class ExperimentMonitorWindow(QMainWindow):
             self.stop_services()
             self.start_services()
         self.aruco_panel.config_status.setText(
-            "配置已保存并应用；监控服务已重启" if was_running else "配置已保存；启动监控后生效"
+            "Configuration saved and applied; monitoring services restarted" if was_running else "Configuration saved; it will take effect when monitoring starts"
         )
         self.aruco_panel.config_status.setStyleSheet("color:#2e7d32;")
 
@@ -1600,10 +1600,10 @@ class ExperimentMonitorWindow(QMainWindow):
         if isinstance(nominal_depth, (int, float)) and isinstance(depth_tolerance, (int, float)):
             minimum_depth = (float(nominal_depth) - float(depth_tolerance)) * 1000.0
             maximum_depth = (float(nominal_depth) + float(depth_tolerance)) * 1000.0
-            allowed_text = f"；允许 {minimum_depth:.1f}–{maximum_depth:.1f} mm"
+            allowed_text = f"; allowed range: {minimum_depth:.1f}–{maximum_depth:.1f} mm"
         self.live_aruco_depth.setText(", ".join(depth_values) + allowed_text if depth_values else "--")
         if status == "marker_depth_out_of_range":
-            self.live_aruco_state.setText("深度超限；到 ArUco Gripper 点击“使用当前深度并应用”")
+            self.live_aruco_state.setText("Depth out of range. In ArUco Gripper, click 'Use Current Depth and Apply'.")
         else:
             self.live_aruco_state.setText(status)
         self.live_aruco_state.setStyleSheet(
@@ -1624,14 +1624,14 @@ class ExperimentMonitorWindow(QMainWindow):
         self.live_aruco_calibrated_distance.setText(
             f"{float(calibrated_mm):.4f} mm"
             if calibration_complete and isinstance(calibrated_mm, (int, float))
-            else "未完成两点标定"
+            else "Two-point calibration incomplete"
             if distance
             else "--"
         )
         self.live_aruco_filtered_distance.setText(
             f"{float(filtered_mm):.4f} mm"
             if calibration_complete and isinstance(filtered_mm, (int, float))
-            else "未完成两点标定"
+            else "Two-point calibration incomplete"
             if distance
             else "--"
         )
@@ -2370,8 +2370,8 @@ def main() -> int:
     if not acquired:
         QMessageBox.warning(
             None,
-            "监控程序已经在运行",
-            "检测到另一个 PrintTac Capture。请使用已有窗口，或先完全关闭它再重试。",
+            "Monitor Already Running",
+            "Another PrintTac Capture instance is running. Use its existing window, or close it completely and try again.",
         )
         return 2
     try:

@@ -1,5 +1,7 @@
 # Setup Guide
 
+First complete [desktop installation](INSTALL_DESKTOP.md). Commands below use the project-local environment.
+
 ## Goal
 
 Get the iPhone app streaming ARKit pose packets to a receiver on macOS or Windows.
@@ -9,13 +11,13 @@ Get the iPhone app streaming ARKit pose packets to a receiver on macOS or Window
 Run:
 
 ```bash
-python3 desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+./.venv/bin/python desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 Optional real upload server:
 
 ```bash
-python3 desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
+./.venv/bin/python desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
 ```
 
 Find your IP:
@@ -29,13 +31,13 @@ ipconfig getifaddr en0
 Run:
 
 ```powershell
-py desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
+.\.venv\Scripts\python.exe desktop/udp_pose_receiver.py --host 0.0.0.0 --port 5555 --encoding binary
 ```
 
 Optional real upload server:
 
 ```powershell
-py desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
+.\.venv\Scripts\python.exe desktop/capture_upload_server.py --host 0.0.0.0 --port 8000
 ```
 
 Find your IP:
@@ -48,7 +50,7 @@ ipconfig
 
 See the full guide:
 
-- `../INSTALL_IPHONE_APP.md`
+- [iPhone installation](INSTALL_IPHONE_APP.md)
 
 Short version:
 
@@ -98,13 +100,13 @@ first valid sample arrives on each side.
 When a computer is available, connect it to the same hotspot and run:
 
 ```bash
-python3 desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
+./.venv/bin/python desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
 On Windows:
 
 ```powershell
-py desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
+.\.venv\Scripts\python.exe desktop/pose_magnetic_receiver.py --phone-ip 172.20.10.1
 ```
 
 The computer sends `PC_HELLO` heartbeats to the app and receives combined APM2 packets on UDP `5558`. The receiver also accepts historical APM1 packets as right-board data. If the computer disconnects, local phone recording continues. Start `desktop/capture_upload_server.py` later and use `Past Records -> Upload Data` to transfer `pose.csv`, the available right/left magnetic CSV files, and the capture manifest.
@@ -141,7 +143,7 @@ x,y,z,qx,qy,qz,qw
 
 The Settings screen can list visible iOS ExternalAccessory devices and their `protocolStrings`. Use that list to copy the real accessory protocol into the app setting and `ios/Info.plist`.
 
-Start the validator on the host:
+Start the validator on the host. In these validator examples, replace `python` with `.\.venv\Scripts\python.exe` on Windows or `./.venv/bin/python` on macOS:
 
 ```bash
 python desktop/pose_tracking_validator.py --host 0.0.0.0 --arkit-port 5555 --sensor-port 5556

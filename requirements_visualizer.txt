@@ -1,11 +1,18 @@
-PyQt6>=6.4.0
-pyqtgraph>=0.12.0
-pyserial>=3.5
-numpy>=1.20.0
-PyOpenGL>=3.1.0
-scipy>=1.10.0
-opencv-python-headless>=4.8.0
-av>=12.0.0
-matplotlib>=3.7.0
-zarr>=2.16,<3
-numcodecs>=0.12.0
+# Supported desktop runtime: CPython 3.12, 64-bit.
+# Keep native dependencies on versions with Windows/macOS binary wheels.
+PyQt6==6.7.1
+PyQt6-Qt6==6.7.3
+PyQt6-sip==13.8.0
+pyqtgraph==0.13.7
+pyserial==3.5
+numpy==1.26.4
+PyOpenGL==3.1.7
+scipy==1.13.1
+# Install ONE OpenCV distribution; use contrib for ArUco and headless to
+# avoid introducing another Qt runtime alongside PyQt6.
+opencv-contrib-python-headless==4.10.0.84
+av==12.3.0
+matplotlib==3.9.2
+# The exporter uses the Zarr v2 API and its compatible codec family.
+zarr==2.18.7
+numcodecs==0.15.1

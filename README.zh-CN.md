@@ -34,20 +34,38 @@ Windows 可直接运行[当前发布版](https://github.com/pigwu/printtac-captu
 
 ### 1. 准备手机 App
 
-在 Mac 上使用 Xcode 和 XcodeGen 构建并签名，按[iPhone 安装说明](docs/INSTALL_IPHONE_APP.md)操作。工程、target 和 scheme 均为 `PrintTacCapture`，手机桌面显示名为 PrintTac Capture。
+手机已安装 App 时可跳过构建。否则在 Mac 上使用 Xcode 和 XcodeGen 构建并签名，按[iPhone 安装说明](docs/INSTALL_IPHONE_APP.md)操作。工程、target 和 scheme 均为 `PrintTacCapture`，手机桌面显示名为 PrintTac Capture。**Xcode 用于构建手机 App；Windows 电脑端不需要 Xcode。**
 
 采集触觉时，将配置好的左右传感器板连接到 iPhone 热点，按[磁传感器采集说明](docs/HOTSPOT_MAGNETIC_CAPTURE.zh-CN.md)逐路检查。未连接磁传感器时也可以采集位姿和视频。
 
 ### 2. 打开电脑端工作台
 
-在仓库根目录使用 Python 3.10 或更新版本：
+源码安装统一使用 **64 位 Python 3.12**。下载并解压仓库（或使用 Git 克隆），在包含 `printtac.py` 的文件夹打开终端。请勿将依赖混装到已有 Conda 或系统环境中。安装脚本会创建项目独立的 `.venv`，安装固定版本的依赖，并检查视频解码、ArUco、绘图和 Zarr 读写。下载中断后可以重复执行。
+
+**Windows 10/11，x64 — PowerShell：**
+
+先从 [Python 3.12 安装包页面](https://www.python.org/downloads/release/python-31210/)的 **Files** 中选择 **Windows installer (64-bit)**（不要下载源码压缩包），保留 Python launcher 选项，安装后重新打开 PowerShell。已有更新的 3.12 补丁版本也可以使用。执行 `py -3.12 --version` 应显示 `Python 3.12.x`。
 
 ```powershell
-python -m pip install -r requirements_visualizer.txt
-python printtac.py monitor --phone-ip 172.20.10.1
+# 首次安装：在解压后的仓库目录运行
+py -3.12 scripts/setup_desktop.py
+
+# 安装显示 [READY] 后启动；以后打开软件也使用这一条命令
+.\.venv\Scripts\python.exe printtac.py monitor --phone-ip 172.20.10.1
 ```
 
-`172.20.10.1` 是常见的 iPhone 热点地址；普通局域网下使用手机实际 IP。macOS 将 `python` 换成 `python3`。
+**macOS — 终端：**
+
+从 [Python 3.12 安装包页面](https://www.python.org/downloads/release/python-31210/)的 **Files** 中选择 **macOS 64-bit universal2 installer**，或使用已有的 Python 3.12，然后运行：
+
+```bash
+python3.12 scripts/setup_desktop.py
+./.venv/bin/python printtac.py monitor --phone-ip 172.20.10.1
+```
+
+无需激活环境、管理员终端或安装 C/C++ 编译器。后续运行务必使用 `.venv` 中的 Python，单独使用 `python`、`python3` 或 `py` 可能切换到其他环境。`scripts/` 内的平台启动脚本也已统一使用 `.venv`。
+
+`172.20.10.1` 是常见的 iPhone 热点地址；普通局域网下使用手机实际 IP。未连接手机时也可以打开电脑端窗口。遇到下载失败、Python 版本错误，或需要检查 Qt 窗口时，见[电脑端安装与故障排查](docs/INSTALL_DESKTOP.md)。
 
 ### 3. 录制、上传和回放
 
@@ -71,30 +89,33 @@ uploads/<实验>/
 ### 4. 导出数据集
 
 ```powershell
-python printtac.py export-zarr --capture "uploads/<实验>" --out "dataset.zarr"
+.\.venv\Scripts\python.exe printtac.py export-zarr --capture "uploads/<实验>" --out "dataset.zarr"
 ```
+
+macOS 将 `.\.venv\Scripts\python.exe` 替换为 `./.venv/bin/python`。
 
 标定、字段和 action 定义见[导出说明](docs/ZARR_EXPORT.md)。原始 ARKit 位姿表示相机轨迹，作为夹爪或机器人位姿使用前需要相应标定；原始磁信号是触觉观测，转换成力/力矩需要校准或估计模型。默认导出的下一帧 action 目标由示教轨迹生成。
 
 ## 按任务选择入口
 
-统一使用 `python printtac.py <工具>`，加 `--help` 查看参数。同一 UDP 端口同时只启动一个接收工具。
+Windows 使用 `.\.venv\Scripts\python.exe printtac.py <工具>`，macOS 使用 `./.venv/bin/python printtac.py <工具>`，将下表的参数填入 `<工具>`。加 `--help` 查看参数。同一 UDP 端口同时只启动一个接收工具。
 
-| 任务 | 命令 |
+| 任务 | 工具参数 |
 | --- | --- |
-| 实时实验监控、上传、回放 | `python printtac.py monitor` |
-| 只看 3D 位姿轨迹 | `python printtac.py visualizer` |
-| 命令行接收位姿 | `python printtac.py receiver` |
-| 仅运行上传服务器 | `python printtac.py upload-server` |
-| 接收位姿和触觉组合包 | `python printtac.py magnetic-receiver` |
-| 视频诊断 / 丢包检查 | `python printtac.py video-debugger` / `packet-loss` |
-| 离线轨迹验证 | `python printtac.py validator` |
-| Zarr 导出窗口 | `python printtac.py zarr-exporter` |
-| 串口传感器配置 / 夹爪开合跟踪 | `python printtac.py anyskin-serial` / `aruco-tracker` |
+| 实时实验监控、上传、回放 | `monitor` |
+| 只看 3D 位姿轨迹 | `visualizer` |
+| 命令行接收位姿 | `receiver` |
+| 仅运行上传服务器 | `upload-server` |
+| 接收位姿和触觉组合包 | `magnetic-receiver` |
+| 视频诊断 / 丢包检查 | `video-debugger` / `packet-loss` |
+| 离线轨迹验证 | `validator` |
+| Zarr 导出窗口 | `zarr-exporter` |
+| 串口传感器配置 / 夹爪开合跟踪 | `anyskin-serial` / `aruco-tracker` |
+| 检查依赖及 Qt 窗口 | `check-deps --gui` |
 
 ```powershell
-python printtac.py --help
-python printtac.py monitor --help
+.\.venv\Scripts\python.exe printtac.py --help
+.\.venv\Scripts\python.exe printtac.py monitor --help
 ```
 
 ## 目录导航
@@ -118,6 +139,7 @@ printtac-capture/
 
 | 开始使用 | 深入了解 |
 | --- | --- |
+| [电脑端安装与故障排查](docs/INSTALL_DESKTOP.md) | |
 | [iPhone 安装](docs/INSTALL_IPHONE_APP.md) | [系统架构](docs/ARCHITECTURE.md) |
 | [网络与传感器设置](docs/SETUP.md) | [通信与录制协议](docs/PROTOCOL.md) |
 | [磁传感器采集](docs/HOTSPOT_MAGNETIC_CAPTURE.zh-CN.md) | [ArUco 夹爪集成](docs/ARUCO_GRIPPER_INTEGRATION.zh-CN.md) |
@@ -127,8 +149,10 @@ printtac-capture/
 ## 开发
 
 ```powershell
-python -m unittest discover -s tests -t .
+.\.venv\Scripts\python.exe -m unittest discover -s tests -t .
 ```
+
+macOS 使用 `./.venv/bin/python`。
 
 在 Mac 上从根目录执行 `xcodegen generate` 生成 iPhone 工程。Windows 打包执行 `.\scripts\build_windows.ps1`，macOS 执行 `bash scripts/build_macos.sh`。开发约定见[贡献说明](CONTRIBUTING.md)。
 

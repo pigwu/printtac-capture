@@ -87,9 +87,9 @@ class ArucoConfigWidget(QWidget):
 
     def _raw_point_spin(self) -> QDoubleSpinBox:
         spin = self._double_spin(-1.0, 5000.0, 4, 0.1, " mm")
-        spin.setSpecialValueText("未记录")
+        spin.setSpecialValueText("Not recorded")
         spin.setValue(-1.0)
-        spin.setToolTip("连续开合采集后自动填写，也可以手工修改原始 X 轴宽度")
+        spin.setToolTip("Filled automatically after recording open/close cycles. You can also edit the raw X-axis width manually.")
         return spin
 
     def _build_ui(self, config_path: Path) -> None:
@@ -102,9 +102,9 @@ class ArucoConfigWidget(QWidget):
         layout = QVBoxLayout(content)
 
         summary = QLabel(
-            "用途：按 UMI-FT 方法逐帧测量夹爪开口。ID 0、ID 1 分别贴在两个活动夹爪上，"
-            "原始宽度取两个标记相机 X 坐标之差。快捷流程：使用当前深度 → 合拢记录最小点 → "
-            "张开记录最大点 → 保存并应用。"
+            "Measure the gripper opening in each frame using the UMI-FT method. Attach markers 0 and 1 to the two moving jaws. "
+            "The raw width is the difference between their camera X coordinates. Quick setup: use the current depth → "
+            "close and capture the minimum → open and capture the maximum → save and apply."
         )
         summary.setWordWrap(True)
         summary.setStyleSheet(
@@ -112,9 +112,9 @@ class ArucoConfigWidget(QWidget):
         )
         layout.addWidget(summary)
 
-        live_box = QGroupBox("当前帧")
+        live_box = QGroupBox("Current Frame")
         live = QGridLayout(live_box)
-        self.live_status_label = QLabel("等待启动监控")
+        self.live_status_label = QLabel("Waiting for monitoring to start")
         self.live_status_label.setWordWrap(True)
         live.addWidget(self.live_status_label, 0, 0, 1, 3)
         self.current_raw_label = QLabel("--")
@@ -122,9 +122,9 @@ class ArucoConfigWidget(QWidget):
         self.filtered_gap_label = QLabel("--")
         for column, (title, value) in enumerate(
             [
-                ("相机 X 轴原始宽度", self.current_raw_label),
-                ("校准后开口", self.current_gap_label),
-                ("滤波后开口", self.filtered_gap_label),
+                ("Raw camera X width", self.current_raw_label),
+                ("Calibrated opening", self.current_gap_label),
+                ("Filtered opening", self.filtered_gap_label),
             ]
         ):
             title_label = QLabel(title)
@@ -132,11 +132,12 @@ class ArucoConfigWidget(QWidget):
             value.setStyleSheet("font-size:20px; font-weight:600;")
             live.addWidget(title_label, 1, column)
             live.addWidget(value, 2, column)
-        self.live_detail_label = QLabel("检测 ID：--")
+        self.live_detail_label = QLabel("Detected IDs: --")
+        self.live_detail_label.setWordWrap(True)
         live.addWidget(self.live_detail_label, 3, 0, 1, 3)
         layout.addWidget(live_box)
 
-        marker_box = QGroupBox("1. 标记设置")
+        marker_box = QGroupBox("1. Marker Settings")
         marker_layout = QGridLayout(marker_box)
         self.dictionary_combo = QComboBox()
         self.dictionary_combo.setEditable(True)
@@ -149,36 +150,36 @@ class ArucoConfigWidget(QWidget):
         self.depth_tolerance_mm_spin.setValue(8.0)
         for column, (label, widget, tip) in enumerate(
             [
-                ("字典", self.dictionary_combo, "随附 PDF 使用 DICT_4X4_50"),
-                ("黑色外边长", self.marker_size_mm, "打印后实测应为 16.000 mm"),
-                ("两个标记 ID", self.marker_ids_edit, "默认 0,1；必须同时检测到两个标记"),
+                ("Dictionary", self.dictionary_combo, "The included PDF uses DICT_4X4_50."),
+                ("Black outer edge length", self.marker_size_mm, "The printed marker should measure 16.000 mm along its black outer edge."),
+                ("Two marker IDs", self.marker_ids_edit, "Default: 0,1. Both markers must be detected in the same frame."),
             ]
         ):
             marker_layout.addWidget(QLabel(label), 0, column)
             marker_layout.addWidget(widget, 1, column)
             widget.setToolTip(tip)
-        marker_layout.addWidget(QLabel("标记标称深度"), 2, 0)
+        marker_layout.addWidget(QLabel("Nominal marker depth"), 2, 0)
         marker_layout.addWidget(self.nominal_depth_mm_spin, 3, 0)
-        marker_layout.addWidget(QLabel("允许深度偏差"), 2, 1)
+        marker_layout.addWidget(QLabel("Depth tolerance"), 2, 1)
         marker_layout.addWidget(self.depth_tolerance_mm_spin, 3, 1)
-        depth_hint = QLabel("UMI-FT 默认 72 ± 8 mm；若安装结构不同，请按实际相机到标记深度修改")
+        depth_hint = QLabel("UMI-FT default: 72 ± 8 mm. Adjust to the actual camera-to-marker depth for your mounting.")
         depth_hint.setWordWrap(True)
         depth_hint.setStyleSheet("color:#546e7a;")
         marker_layout.addWidget(depth_hint, 2, 2)
-        self.use_current_depth_button = QPushButton("使用当前深度并应用")
+        self.use_current_depth_button = QPushButton("Use Current Depth and Apply")
         self.use_current_depth_button.setToolTip(
-            "用当前两个标记深度的中点作为标称值，并自动留出至少 ±20 mm 余量"
+            "Use the midpoint of the two current marker depths, with a tolerance of at least ±20 mm."
         )
         self.use_current_depth_button.clicked.connect(self.use_current_marker_depth)
         marker_layout.addWidget(self.use_current_depth_button, 3, 2)
         layout.addWidget(marker_box)
 
-        calibration_box = QGroupBox("2. 两点快捷标定")
+        calibration_box = QGroupBox("2. Quick Two-Point Calibration")
         calibration = QGridLayout(calibration_box)
-        calibration.addWidget(QLabel("位置"), 0, 0)
-        calibration.addWidget(QLabel("实际夹爪开口（卡尺测量）"), 0, 1)
-        calibration.addWidget(QLabel("记录的 X 轴宽度"), 0, 2)
-        calibration.addWidget(QLabel("保持不动约 1 秒后点击"), 0, 3)
+        calibration.addWidget(QLabel("Position"), 0, 0)
+        calibration.addWidget(QLabel("Actual opening (caliper)"), 0, 1)
+        calibration.addWidget(QLabel("Recorded X width"), 0, 2)
+        calibration.addWidget(QLabel("Hold still for 1 s, then click"), 0, 3)
 
         self.minimum_gap_mm_spin = self._double_spin(0.0, 2000.0, 3, 0.1, " mm")
         self.maximum_gap_mm_spin = self._double_spin(0.0, 2000.0, 3, 0.1, " mm")
@@ -188,42 +189,42 @@ class ArucoConfigWidget(QWidget):
         self.calibration_min_cycles_spin.setRange(2, 20)
         self.calibration_min_cycles_spin.setValue(5)
 
-        calibration.addWidget(QLabel("最小开口"), 1, 0)
+        calibration.addWidget(QLabel("Minimum opening"), 1, 0)
         calibration.addWidget(self.minimum_gap_mm_spin, 1, 1)
         calibration.addWidget(self.minimum_raw_mm_spin, 1, 2)
-        self.capture_minimum_button = QPushButton("记录当前最小点")
+        self.capture_minimum_button = QPushButton("Capture Minimum")
         self.capture_minimum_button.clicked.connect(self.capture_minimum_point)
         calibration.addWidget(self.capture_minimum_button, 1, 3)
-        calibration.addWidget(QLabel("最大开口"), 2, 0)
+        calibration.addWidget(QLabel("Maximum opening"), 2, 0)
         calibration.addWidget(self.maximum_gap_mm_spin, 2, 1)
         calibration.addWidget(self.maximum_raw_mm_spin, 2, 2)
-        self.capture_maximum_button = QPushButton("记录当前最大点")
+        self.capture_maximum_button = QPushButton("Capture Maximum")
         self.capture_maximum_button.clicked.connect(self.capture_maximum_point)
         calibration.addWidget(self.capture_maximum_button, 2, 3)
 
         self.quick_calibration_status_label = QLabel(
-            "先填写卡尺测得的最小/最大实际开口，再分别保持在两个端点并点击记录。"
+            "Enter the minimum and maximum openings measured with calipers, then hold the gripper at each endpoint and capture it."
         )
         self.quick_calibration_status_label.setWordWrap(True)
         self.quick_calibration_status_label.setStyleSheet("color:#1565c0;")
         calibration.addWidget(self.quick_calibration_status_label, 3, 0, 1, 4)
 
-        quick_apply_button = QPushButton("完成：保存并应用标定")
+        quick_apply_button = QPushButton("Finish: Save and Apply Calibration")
         quick_apply_button.setStyleSheet("font-weight:600; padding:6px 16px;")
         quick_apply_button.clicked.connect(self.finish_quick_calibration)
         calibration.addWidget(quick_apply_button, 4, 0, 1, 4)
 
-        self.show_cyclic_calibration_checkbox = QCheckBox("可选：显示连续开合稳健采集")
+        self.show_cyclic_calibration_checkbox = QCheckBox("Optional: Record open/close cycles for robust calibration")
         calibration.addWidget(self.show_cyclic_calibration_checkbox, 5, 0, 1, 4)
         self.cyclic_calibration_widget = QWidget()
         cyclic = QGridLayout(self.cyclic_calibration_widget)
         cyclic.setContentsMargins(0, 0, 0, 0)
-        cyclic.addWidget(QLabel("最少完整开合周期"), 0, 0)
+        cyclic.addWidget(QLabel("Minimum complete cycles"), 0, 0)
         cyclic.addWidget(self.calibration_min_cycles_spin, 0, 1)
-        self.start_collection_button = QPushButton("开始采集")
-        self.finish_collection_button = QPushButton("结束采集并计算")
+        self.start_collection_button = QPushButton("Start Recording")
+        self.finish_collection_button = QPushButton("Finish and Calculate")
         self.finish_collection_button.setEnabled(False)
-        self.clear_collection_button = QPushButton("清空本次采集")
+        self.clear_collection_button = QPushButton("Clear Recording")
         self.start_collection_button.clicked.connect(self.start_calibration_collection)
         self.finish_collection_button.clicked.connect(self.finish_calibration_collection)
         self.clear_collection_button.clicked.connect(self.clear_calibration_collection)
@@ -232,11 +233,11 @@ class ArucoConfigWidget(QWidget):
         controls.addWidget(self.finish_collection_button)
         controls.addWidget(self.clear_collection_button)
         cyclic.addLayout(controls, 1, 0, 1, 3)
-        self.collection_status_label = QLabel("尚未开始采集")
+        self.collection_status_label = QLabel("Recording has not started")
         self.collection_status_label.setWordWrap(True)
         cyclic.addWidget(self.collection_status_label, 2, 0, 1, 3)
 
-        calculate_button = QPushButton("使用上方端点重新计算")
+        calculate_button = QPushButton("Recalculate from the Endpoints Above")
         calculate_button.clicked.connect(self.calculate_two_point_calibration)
         cyclic.addWidget(calculate_button, 3, 0, 1, 3)
         self.cyclic_calibration_widget.setVisible(False)
@@ -244,23 +245,23 @@ class ArucoConfigWidget(QWidget):
             self.cyclic_calibration_widget.setVisible
         )
         calibration.addWidget(self.cyclic_calibration_widget, 6, 0, 1, 4)
-        self.calibration_result_label = QLabel("尚未完成两点标定")
+        self.calibration_result_label = QLabel("Two-point calibration incomplete")
         self.calibration_result_label.setWordWrap(True)
         self.calibration_result_label.setStyleSheet(
             "padding:7px; background:#eceff1; border-radius:4px;"
         )
         calibration.addWidget(self.calibration_result_label, 7, 0, 1, 4)
         formula = QLabel(
-            "快捷记录使用最近约 1 秒稳定帧的中位数，减少单帧抖动。连续开合采集仅在需要更高稳健性时使用。"
+            "Quick capture uses the median of about 1 second of stable frames to reduce jitter. Record repeated open/close cycles if greater robustness is needed."
         )
         formula.setWordWrap(True)
         formula.setStyleSheet("color:#546e7a;")
         calibration.addWidget(formula, 8, 0, 1, 4)
         layout.addWidget(calibration_box)
 
-        output_box = QGroupBox("3. 输出与保存")
+        output_box = QGroupBox("3. Output and Save")
         output = QGridLayout(output_box)
-        self.enabled_checkbox = QCheckBox("启用逐帧 ArUco 测距与 UDP 输出")
+        self.enabled_checkbox = QCheckBox("Enable per-frame ArUco measurement and UDP output")
         self.enabled_checkbox.setChecked(True)
         self.output_host_edit = QLineEdit("127.0.0.1")
         self.output_port_spin = QSpinBox()
@@ -268,39 +269,39 @@ class ArucoConfigWidget(QWidget):
         self.output_port_spin.setValue(5570)
         self.smoothing_alpha_spin = self._double_spin(0.01, 1.0, 3, 0.05)
         self.smoothing_alpha_spin.setValue(1.0)
-        self.smoothing_alpha_spin.setToolTip("1.0 表示不平滑；数值越小越平稳，但延迟越大")
+        self.smoothing_alpha_spin.setToolTip("1.0 disables smoothing. Lower values give smoother output with more delay.")
         output.addWidget(self.enabled_checkbox, 0, 0, 1, 3)
         for column, (label, widget) in enumerate(
             [
-                ("UDP 接收 IP", self.output_host_edit),
-                ("UDP 端口", self.output_port_spin),
-                ("EMA 系数", self.smoothing_alpha_spin),
+                ("UDP receiver IP", self.output_host_edit),
+                ("UDP port", self.output_port_spin),
+                ("EMA smoothing factor", self.smoothing_alpha_spin),
             ]
         ):
             output.addWidget(QLabel(label), 1, column)
             output.addWidget(widget, 2, column)
         layout.addWidget(output_box)
 
-        self.show_advanced_checkbox = QCheckBox("显示高级设置（配置文件、APV1 内参、检测门限）")
+        self.show_advanced_checkbox = QCheckBox("Advanced: configuration file, APV1 intrinsics and detection thresholds")
         layout.addWidget(self.show_advanced_checkbox)
-        self.advanced_box = QGroupBox("高级设置")
+        self.advanced_box = QGroupBox("Advanced Settings")
         advanced = QVBoxLayout(self.advanced_box)
 
         file_layout = QHBoxLayout()
         self.config_path_edit = QLineEdit(str(config_path))
-        browse_button = QPushButton("浏览")
+        browse_button = QPushButton("Browse")
         browse_button.clicked.connect(self.browse_configuration)
-        load_button = QPushButton("重新加载")
+        load_button = QPushButton("Reload")
         load_button.clicked.connect(self.load_configuration)
-        file_layout.addWidget(QLabel("配置文件"))
+        file_layout.addWidget(QLabel("Configuration file"))
         file_layout.addWidget(self.config_path_edit, 1)
         file_layout.addWidget(browse_button)
         file_layout.addWidget(load_button)
         advanced.addLayout(file_layout)
 
-        camera_box = QGroupBox("旧 APV1 回退内参（APV2 不勾选）")
+        camera_box = QGroupBox("Legacy APV1 Fallback Intrinsics (leave disabled for APV2)")
         camera = QGridLayout(camera_box)
-        self.manual_intrinsics_checkbox = QCheckBox("使用手工内参")
+        self.manual_intrinsics_checkbox = QCheckBox("Use manual intrinsics")
         camera.addWidget(self.manual_intrinsics_checkbox, 0, 0, 1, 6)
         self.fx_spin = self._double_spin(0.0, 20000.0, 4, 1.0)
         self.fy_spin = self._double_spin(0.0, 20000.0, 4, 1.0)
@@ -318,8 +319,8 @@ class ArucoConfigWidget(QWidget):
                 ("fy", self.fy_spin),
                 ("cx", self.cx_spin),
                 ("cy", self.cy_spin),
-                ("宽度", self.image_width_spin),
-                ("高度", self.image_height_spin),
+                ("Width", self.image_width_spin),
+                ("Height", self.image_height_spin),
             ]
         ):
             row = 1 + index // 3
@@ -327,34 +328,34 @@ class ArucoConfigWidget(QWidget):
             camera.addWidget(QLabel(label), row, column)
             camera.addWidget(widget, row, column + 1)
         self.distortion_edit = QLineEdit("0,0,0,0,0")
-        camera.addWidget(QLabel("畸变系数"), 3, 0)
+        camera.addWidget(QLabel("Distortion coefficients"), 3, 0)
         camera.addWidget(self.distortion_edit, 3, 1, 1, 5)
         self.manual_intrinsics_checkbox.toggled.connect(self._set_intrinsics_enabled)
         self._set_intrinsics_enabled(False)
         advanced.addWidget(camera_box)
 
-        quality_box = QGroupBox("检测质量门限")
+        quality_box = QGroupBox("Detection Quality Thresholds")
         quality = QFormLayout(quality_box)
         self.max_reprojection_spin = self._double_spin(0.1, 50.0, 3, 0.1, " px")
         self.min_perimeter_spin = self._double_spin(4.0, 10000.0, 1, 5.0, " px")
-        quality.addRow("最大重投影误差", self.max_reprojection_spin)
-        quality.addRow("最小标记周长", self.min_perimeter_spin)
+        quality.addRow("Maximum reprojection error", self.max_reprojection_spin)
+        quality.addRow("Minimum marker perimeter", self.min_perimeter_spin)
         advanced.addWidget(quality_box)
         self.advanced_box.setVisible(False)
         self.show_advanced_checkbox.toggled.connect(self.advanced_box.setVisible)
         layout.addWidget(self.advanced_box)
 
         buttons = QHBoxLayout()
-        save_button = QPushButton("仅保存")
+        save_button = QPushButton("Save Only")
         save_button.clicked.connect(lambda: self.save_configuration(apply=False))
-        apply_button = QPushButton("保存并应用")
+        apply_button = QPushButton("Save and Apply")
         apply_button.setStyleSheet("font-weight:600; padding:6px 16px;")
         apply_button.clicked.connect(lambda: self.save_configuration(apply=True))
         buttons.addStretch(1)
         buttons.addWidget(save_button)
         buttons.addWidget(apply_button)
         layout.addLayout(buttons)
-        self.config_status = QLabel("尚未加载配置")
+        self.config_status = QLabel("Configuration not loaded")
         self.config_status.setWordWrap(True)
         layout.addWidget(self.config_status)
         layout.addStretch(1)
@@ -379,7 +380,7 @@ class ArucoConfigWidget(QWidget):
     def browse_configuration(self) -> None:
         selected, _ = QFileDialog.getSaveFileName(
             self,
-            "选择 ArUco 测距配置",
+            "Select ArUco Measurement Configuration",
             str(self.resolved_config_path()),
             "JSON (*.json)",
         )
@@ -397,7 +398,7 @@ class ArucoConfigWidget(QWidget):
             if value.strip()
         )
         if len(marker_ids) != 2:
-            raise ValueError("夹爪测距必须且只能填写两个标记 ID")
+            raise ValueError("Gripper measurement requires exactly two marker IDs")
 
         minimum_raw_m = self._raw_spin_m(self.minimum_raw_mm_spin)
         maximum_raw_m = self._raw_spin_m(self.maximum_raw_mm_spin)
@@ -427,7 +428,7 @@ class ArucoConfigWidget(QWidget):
             dtype=np.float64,
         ).reshape(-1, 1)
         if distortion.size not in (4, 5, 8, 12, 14):
-            raise ValueError("畸变系数必须填写 4、5、8、12 或 14 个数")
+            raise ValueError("Enter 4, 5, 8, 12 or 14 distortion coefficients")
 
         config = TrackerConfig(
             dictionary_name=self.dictionary_combo.currentText().strip(),
@@ -453,7 +454,7 @@ class ArucoConfigWidget(QWidget):
             calibration_min_cycles=self.calibration_min_cycles_spin.value(),
         )
         if not config.output_host:
-            raise ValueError("UDP 接收 IP 不能为空")
+            raise ValueError("UDP receiver IP must not be empty")
         if config.tracking_enabled:
             ArucoEstimator(config)
         return config
@@ -500,9 +501,9 @@ class ArucoConfigWidget(QWidget):
             self._raw_spin_m(self.minimum_raw_mm_spin) is not None
             and self._raw_spin_m(self.maximum_raw_mm_spin) is not None
         )
-        prefix = "两点标定完成" if complete else "尚未完成两点标定"
+        prefix = "Two-point calibration complete" if complete else "Two-point calibration incomplete"
         self.calibration_result_label.setText(
-            f"{prefix}　scale={self.distance_scale:.8f}　offset={self.distance_offset_m * 1000.0:.4f} mm"
+            f"{prefix} | scale={self.distance_scale:.8f} | offset={self.distance_offset_m * 1000.0:.4f} mm"
         )
         self.calibration_result_label.setStyleSheet(
             "padding:7px; border-radius:4px; "
@@ -513,27 +514,27 @@ class ArucoConfigWidget(QWidget):
         try:
             path = self.resolved_config_path()
             self.set_config(TrackerConfig.load(path))
-            self.config_status.setText(f"已加载：{path}")
+            self.config_status.setText(f"Loaded: {path}")
             self.config_status.setStyleSheet("color:#2e7d32;")
         except Exception as exc:
-            self.config_status.setText(f"加载失败：{exc}")
+            self.config_status.setText(f"Failed to load: {exc}")
             self.config_status.setStyleSheet("color:#c62828;")
             if show_dialog:
-                QMessageBox.critical(self, "ArUco 测距配置错误", str(exc))
+                QMessageBox.critical(self, "ArUco Configuration Error", str(exc))
 
     def save_configuration(self, apply: bool) -> None:
         try:
             config = self.current_config()
             path = self.resolved_config_path()
             config.save(path)
-            self.config_status.setText(f"已保存：{path}" + ("；正在应用" if apply else ""))
+            self.config_status.setText(f"Saved: {path}" + ("; applying configuration" if apply else ""))
             self.config_status.setStyleSheet("color:#2e7d32;")
             if apply:
                 self.apply_requested.emit(config)
         except Exception as exc:
-            self.config_status.setText(f"保存失败：{exc}")
+            self.config_status.setText(f"Failed to save: {exc}")
             self.config_status.setStyleSheet("color:#c62828;")
-            QMessageBox.critical(self, "无法保存 ArUco 测距配置", str(exc))
+            QMessageBox.critical(self, "Cannot Save ArUco Configuration", str(exc))
 
     def use_current_marker_depth(self, _checked: bool = False) -> None:
         depths_mm = [
@@ -544,8 +545,8 @@ class ArucoConfigWidget(QWidget):
         if len(depths_mm) < 2:
             QMessageBox.warning(
                 self,
-                "没有可用深度",
-                "请先让 0.5× 画面同时看到两个标记，再点击“使用当前深度并应用”。",
+                "No Depth Available",
+                "Make both markers visible in the 0.5× view, then click 'Use Current Depth and Apply'.",
             )
             return
         nominal_mm = float(np.median(depths_mm))
@@ -554,7 +555,7 @@ class ArucoConfigWidget(QWidget):
         self.nominal_depth_mm_spin.setValue(nominal_mm)
         self.depth_tolerance_mm_spin.setValue(tolerance_mm)
         self.quick_calibration_status_label.setText(
-            f"已按当前深度设置为 {nominal_mm:.1f} ± {tolerance_mm:.1f} mm；正在保存并应用。"
+            f"Depth set to {nominal_mm:.1f} ± {tolerance_mm:.1f} mm; saving and applying."
         )
         self.quick_calibration_status_label.setStyleSheet("color:#2e7d32; font-weight:600;")
         self.save_configuration(apply=True)
@@ -568,8 +569,8 @@ class ArucoConfigWidget(QWidget):
         if values.size < 4:
             QMessageBox.warning(
                 self,
-                "稳定帧不足",
-                "请确认状态为“正在逐帧测量”，把夹爪保持不动约 1 秒后再点击。",
+                "Not Enough Stable Frames",
+                "Wait for 'Measuring each frame', hold the gripper still for about 1 second, then try again.",
             )
             return None
         point_m = float(np.median(values))
@@ -577,17 +578,17 @@ class ArucoConfigWidget(QWidget):
         if spread_m > 0.0015:
             QMessageBox.warning(
                 self,
-                "端点仍在移动",
-                f"最近帧波动约 {spread_m * 1000.0:.2f} mm。请保持不动约 1 秒后重试。",
+                "Gripper Still Moving",
+                f"Recent measurements vary by about {spread_m * 1000.0:.2f} mm. Hold still for about 1 second and try again.",
             )
             return None
         return point_m, int(values.size), spread_m
 
     def capture_minimum_point(self, _checked: bool = False) -> None:
-        self._capture_quick_point(self.minimum_raw_mm_spin, "最小")
+        self._capture_quick_point(self.minimum_raw_mm_spin, "minimum")
 
     def capture_maximum_point(self, _checked: bool = False) -> None:
-        self._capture_quick_point(self.maximum_raw_mm_spin, "最大")
+        self._capture_quick_point(self.maximum_raw_mm_spin, "maximum")
 
     def _capture_quick_point(self, target: QDoubleSpinBox, label: str) -> None:
         stable = self._stable_recent_raw_point()
@@ -596,8 +597,8 @@ class ArucoConfigWidget(QWidget):
         point_m, sample_count, spread_m = stable
         target.setValue(point_m * 1000.0)
         self.quick_calibration_status_label.setText(
-            f"已记录{label}点 {point_m * 1000.0:.3f} mm（{sample_count} 帧，波动 "
-            f"{spread_m * 1000.0:.3f} mm）。"
+            f"Captured {label}: {point_m * 1000.0:.3f} mm ({sample_count} frames, variation "
+            f"{spread_m * 1000.0:.3f} mm)."
         )
         self.quick_calibration_status_label.setStyleSheet("color:#2e7d32; font-weight:600;")
         if (
@@ -613,7 +614,7 @@ class ArucoConfigWidget(QWidget):
 
     def start_calibration_collection(self, _checked: bool = False) -> None:
         if self.maximum_gap_mm_spin.value() <= self.minimum_gap_mm_spin.value():
-            QMessageBox.warning(self, "实际开口无效", "最大实际开口必须大于最小实际开口。")
+            QMessageBox.warning(self, "Invalid Opening", "The maximum actual opening must be greater than the minimum.")
             return
         self.calibration_samples_m.clear()
         self.calibration_collection_summary = None
@@ -621,7 +622,7 @@ class ArucoConfigWidget(QWidget):
         self.start_collection_button.setEnabled(False)
         self.finish_collection_button.setEnabled(True)
         self.collection_status_label.setText(
-            f"正在采集：请连续完成至少 {self.calibration_min_cycles_spin.value()} 次全闭→全开→全闭"
+            f"Recording: complete at least {self.calibration_min_cycles_spin.value()} cycles of fully closed → fully open → fully closed."
         )
         self.collection_status_label.setStyleSheet("color:#1565c0; font-weight:600;")
 
@@ -631,13 +632,13 @@ class ArucoConfigWidget(QWidget):
         self.calibration_collection_summary = None
         self.start_collection_button.setEnabled(True)
         self.finish_collection_button.setEnabled(False)
-        self.collection_status_label.setText("本次采集已清空；已保存的标定端点未改变")
+        self.collection_status_label.setText("Recording cleared; saved calibration endpoints are unchanged")
         self.collection_status_label.setStyleSheet("color:#546e7a;")
 
     def _update_collection_summary(self) -> None:
         if len(self.calibration_samples_m) < 10:
             self.collection_status_label.setText(
-                f"正在采集：{len(self.calibration_samples_m)} 个有效帧；等待形成完整开合范围"
+                f"Recording: {len(self.calibration_samples_m)} valid frames; waiting for the full opening range"
             )
             return
         try:
@@ -645,13 +646,13 @@ class ArucoConfigWidget(QWidget):
         except ValueError as exc:
             self.calibration_collection_summary = None
             self.collection_status_label.setText(
-                f"正在采集：{len(self.calibration_samples_m)} 个有效帧；{exc}"
+                f"Recording: {len(self.calibration_samples_m)} valid frames; {exc}"
             )
             return
         self.calibration_collection_summary = summary
         self.collection_status_label.setText(
-            f"正在采集：{summary.sample_count} 帧，检测到约 {summary.cycle_count} 个完整周期；"
-            f"稳健端点 {summary.minimum_raw_m * 1000.0:.3f}–"
+            f"Recording: {summary.sample_count} frames, approximately {summary.cycle_count} complete cycles; "
+            f"robust endpoints {summary.minimum_raw_m * 1000.0:.3f}–"
             f"{summary.maximum_raw_m * 1000.0:.3f} mm"
         )
 
@@ -662,10 +663,10 @@ class ArucoConfigWidget(QWidget):
         if summary is None or summary.cycle_count < required_cycles:
             measured_cycles = 0 if summary is None else summary.cycle_count
             message = (
-                f"目前只检测到约 {measured_cycles} 个完整周期，需要至少 {required_cycles} 个。"
-                "请继续完整开合后再次点击结束。"
+                f"Detected approximately {measured_cycles} complete cycles; at least {required_cycles} are required. "
+                "Continue fully opening and closing the gripper, then click 'Finish and Calculate' again."
             )
-            QMessageBox.warning(self, "标定周期不足", message)
+            QMessageBox.warning(self, "Not Enough Calibration Cycles", message)
             self.collection_status_label.setText(message)
             self.collection_status_label.setStyleSheet("color:#ef6c00; font-weight:600;")
             return
@@ -678,8 +679,8 @@ class ArucoConfigWidget(QWidget):
         if not self.calculate_two_point_calibration(show_dialog=True):
             return
         self.collection_status_label.setText(
-            f"采集完成：{summary.sample_count} 帧、{summary.cycle_count} 个完整周期；"
-            "已写入稳健最小/最大 X 轴宽度"
+            f"Recording complete: {summary.sample_count} frames, {summary.cycle_count} complete cycles; "
+            "robust minimum and maximum X widths have been filled in"
         )
         self.collection_status_label.setStyleSheet("color:#2e7d32; font-weight:600;")
 
@@ -691,9 +692,9 @@ class ArucoConfigWidget(QWidget):
         minimum_raw_m = self._raw_spin_m(self.minimum_raw_mm_spin)
         maximum_raw_m = self._raw_spin_m(self.maximum_raw_mm_spin)
         if minimum_raw_m is None or maximum_raw_m is None:
-            message = "请先分别点击“记录当前最小点”和“记录当前最大点”，或手工填写两个原始 X 轴宽度。"
+            message = "Click 'Capture Minimum' and 'Capture Maximum' first, or enter both raw X widths manually."
             if show_dialog:
-                QMessageBox.warning(self, "标定点不完整", message)
+                QMessageBox.warning(self, "Missing Calibration Points", message)
             self.config_status.setText(message)
             self.config_status.setStyleSheet("color:#ef6c00;")
             return False
@@ -706,12 +707,12 @@ class ArucoConfigWidget(QWidget):
             )
         except ValueError as exc:
             if show_dialog:
-                QMessageBox.warning(self, "无法计算两点标定", str(exc))
-            self.config_status.setText(f"标定失败：{exc}")
+                QMessageBox.warning(self, "Cannot Calculate Two-Point Calibration", str(exc))
+            self.config_status.setText(f"Calibration failed: {exc}")
             self.config_status.setStyleSheet("color:#c62828;")
             return False
         self._refresh_calibration_result()
-        self.config_status.setText("两点标定已计算；点击“保存并应用”后逐帧输出新的实际开口")
+        self.config_status.setText("Two-point calibration calculated. Click 'Save and Apply' to use it for per-frame opening measurements.")
         self.config_status.setStyleSheet("color:#1565c0;")
         return True
 
@@ -732,18 +733,18 @@ class ArucoConfigWidget(QWidget):
         ):
             minimum_depth_mm = (float(nominal_depth_m) - float(depth_tolerance_m)) * 1000.0
             maximum_depth_mm = (float(nominal_depth_m) + float(depth_tolerance_m)) * 1000.0
-            allowed_depth_text = f"；允许 {minimum_depth_mm:.1f}–{maximum_depth_mm:.1f} mm"
+            allowed_depth_text = f"; allowed range: {minimum_depth_mm:.1f}–{maximum_depth_mm:.1f} mm"
         translations = {
-            "tracking_gripper_distance": "正在逐帧测量",
-            "insufficient_markers_for_distance": "必须同时看到两个标记",
-            "marker_depth_out_of_range": "标记深度超出允许范围",
-            "missing_intrinsics": "缺少相机内参；请使用 APV2",
-            "no_markers": "未检测到配置的两个 ID",
-            "processor_error": "处理错误",
+            "tracking_gripper_distance": "Measuring each frame",
+            "insufficient_markers_for_distance": "Both markers must be visible",
+            "marker_depth_out_of_range": "Marker depth is outside the allowed range",
+            "missing_intrinsics": "Camera intrinsics missing; use APV2",
+            "no_markers": "Neither configured marker ID was detected",
+            "processor_error": "Processing error",
         }
         status_detail = allowed_depth_text if status == "marker_depth_out_of_range" else ""
         self.live_status_label.setText(
-            f"{translations.get(status, status)}{status_detail}（{status}）"
+            f"{translations.get(status, status)}{status_detail} ({status})"
         )
         color = "#2e7d32" if status == "tracking_gripper_distance" else "#ef6c00"
         if status in {"processor_error", "missing_intrinsics", "marker_depth_out_of_range"}:
@@ -759,7 +760,7 @@ class ArucoConfigWidget(QWidget):
         error_text = f"{max(errors):.3f} px" if errors else "--"
         output_error = result.get("output_error")
         output_text = (
-            f"发送错误：{output_error}"
+            f"Send error: {output_error}"
             if output_error
             else f"{self.output_host_edit.text().strip()}:{self.output_port_spin.value()}"
         )
@@ -769,8 +770,8 @@ class ArucoConfigWidget(QWidget):
             if isinstance(value, (int, float))
         )
         self.live_detail_label.setText(
-            f"检测 ID：{', '.join(str(value) for value in ids) if ids else '--'}　"
-            f"深度：{depth_text or '--'}{allowed_depth_text}　重投影误差：{error_text}　UDP：{output_text}"
+            f"Detected IDs: {', '.join(str(value) for value in ids) if ids else '--'} | "
+            f"Depth: {depth_text or '--'}{allowed_depth_text} | Reprojection error: {error_text} | UDP: {output_text}"
         )
 
         distance = result.get("gripper_distance") or {}
@@ -791,14 +792,14 @@ class ArucoConfigWidget(QWidget):
         self.current_gap_label.setText(
             f"{float(calibrated_mm):.4f} mm"
             if calibration_complete and isinstance(calibrated_mm, (int, float))
-            else "未标定"
+            else "Not calibrated"
             if distance
             else "--"
         )
         self.filtered_gap_label.setText(
             f"{float(filtered_mm):.4f} mm"
             if calibration_complete and isinstance(filtered_mm, (int, float))
-            else "未标定"
+            else "Not calibrated"
             if distance
             else "--"
         )

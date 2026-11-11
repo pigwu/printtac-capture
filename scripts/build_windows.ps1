@@ -8,5 +8,6 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $BuildArguments = @((Join-Path $PSScriptRoot "build_desktop.py"), "--tool", $Tool)
 if ($DryRun) { $BuildArguments += "--dry-run" }
-python @BuildArguments
+. (Join-Path $PSScriptRoot "desktop_python.ps1")
+& $PrintTacPython @BuildArguments
 if ($LASTEXITCODE -ne 0) { throw "PrintTac desktop build failed" }

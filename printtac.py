@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> None:
     # Parse only the tool name. All remaining arguments belong to that tool,
     # including --help, paths with spaces, and options with negative values.
     args = parser.parse_args(arguments[:1])
-    if args.tool in {"zarr-exporter", "export-transform", "check-deps"} and arguments[1:] in (["--help"], ["-h"]):
+    if args.tool in {"zarr-exporter", "export-transform"} and arguments[1:] in (["--help"], ["-h"]):
         print(f"{TOOLS[args.tool][1]}\nUsage: python printtac.py {args.tool}\nThis tool has no command-line options.")
         return
     desktop_dir = Path(__file__).resolve().parent / "desktop"

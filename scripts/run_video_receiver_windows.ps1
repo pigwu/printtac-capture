@@ -6,10 +6,6 @@ param(
 
 Set-Location (Split-Path -Parent $PSScriptRoot)
 
-if (Get-Command py -ErrorAction SilentlyContinue) {
-    py desktop/udp_video_debug_ui.py --bind $BindHost --video-port $VideoPort --pose-port $PosePort
-} elseif (Get-Command python -ErrorAction SilentlyContinue) {
-    python desktop/udp_video_debug_ui.py --bind $BindHost --video-port $VideoPort --pose-port $PosePort
-} else {
-    Write-Error "Python launcher not found. Install Python 3 first."
-}
+. (Join-Path $PSScriptRoot "desktop_python.ps1")
+& $PrintTacPython desktop/udp_video_debug_ui.py --bind $BindHost --video-port $VideoPort --pose-port $PosePort
+exit $LASTEXITCODE

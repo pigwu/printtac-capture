@@ -1,0 +1,2 @@
+# Keep shell launchers runnable after a Windows checkout or archive transfer.
+*.sh text eol=lf

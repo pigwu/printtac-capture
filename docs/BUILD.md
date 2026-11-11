@@ -1,17 +1,16 @@
 # Build PrintTac desktop executables
 
-Build on the target operating system: Windows creates `.exe` files; macOS creates `.app` bundles. Python 3.10 or newer is required for source builds.
+Build on the target operating system: Windows creates `.exe` files; macOS creates `.app` bundles. Use 64-bit Python 3.12 and the [desktop installation guide](INSTALL_DESKTOP.md).
 
 ## Prepare the environment
 
-Use one Python environment for dependency installation and building:
+First run the setup command in the README. Then install the packaging dependencies into the same `.venv`:
 
-```bash
-python -m pip install -r requirements_visualizer.txt
-python -m pip install pyinstaller pillow
+```powershell
+.\.venv\Scripts\python.exe -m pip install pyinstaller pillow
 ```
 
-On macOS use `python3`. A clean virtual environment is recommended. PyInstaller packages this environment; the recipient of a correctly built standalone executable does not need Python.
+On macOS use `./.venv/bin/python`. The build launchers use this project-local environment. PyInstaller packages this environment; the recipient of a correctly built standalone executable does not need Python.
 
 ## Build on Windows
 
@@ -77,4 +76,4 @@ For macOS, distribute a build created on macOS. Signing and notarization require
 - **An older EXE still shows the old name:** source changes do not modify already-built binaries. Use a newly built PrintTac executable. Historical release assets retain their original version names.
 - **Video decoder unavailable:** rebuild the monitor/video debugger with its manifest settings; the builder collects PyAV for those tools.
 
-The smaller visualizer-only environment is available through `.\scripts\build_clean.ps1` on Windows. It produces `PrintTac Pose Visualizer.exe`, rather than the integrated monitor.
+An isolated visualizer build is available through `.\scripts\build_clean.ps1` on Windows, after desktop setup. It uses the same pinned desktop dependencies in a separate build environment and produces `PrintTac Pose Visualizer.exe`.

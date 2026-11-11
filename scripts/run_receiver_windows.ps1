@@ -6,10 +6,6 @@ param(
 
 Set-Location (Split-Path -Parent $PSScriptRoot)
 
-if (Get-Command py -ErrorAction SilentlyContinue) {
-    py desktop/udp_pose_receiver.py --host $HostIP --port $Port --encoding $Encoding
-} elseif (Get-Command python -ErrorAction SilentlyContinue) {
-    python desktop/udp_pose_receiver.py --host $HostIP --port $Port --encoding $Encoding
-} else {
-    Write-Error "Python launcher not found. Install Python 3 first."
-}
+. (Join-Path $PSScriptRoot "desktop_python.ps1")
+& $PrintTacPython desktop/udp_pose_receiver.py --host $HostIP --port $Port --encoding $Encoding
+exit $LASTEXITCODE

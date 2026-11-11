@@ -1,0 +1,40 @@
+name: Desktop installation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-15, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    env:
+      QT_QPA_PLATFORM: offscreen
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install from the README
+        run: python scripts/setup_desktop.py
+      - name: Check Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          .\.venv\Scripts\python.exe printtac.py check-deps --gui
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\.venv\Scripts\python.exe printtac.py monitor --help
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          .\.venv\Scripts\python.exe -m unittest discover -s tests -t .
+          exit $LASTEXITCODE
+      - name: Check macOS
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          ./.venv/bin/python printtac.py check-deps --gui
+          ./.venv/bin/python printtac.py monitor --help
+          ./.venv/bin/python -m unittest discover -s tests -t .

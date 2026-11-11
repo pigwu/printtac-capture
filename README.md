@@ -34,20 +34,38 @@ On Windows, a current [release executable](https://github.com/pigwu/printtac-cap
 
 ### 1. Prepare the phone
 
-Build and sign the iOS app on a Mac using Xcode and XcodeGen. Follow the [iPhone installation guide](docs/INSTALL_IPHONE_APP.md). The project, target and scheme are `PrintTacCapture`; the installed app is named PrintTac Capture.
+If the app is already installed, skip this build step. Otherwise build and sign it on a Mac using Xcode and XcodeGen; follow the [iPhone installation guide](docs/INSTALL_IPHONE_APP.md). The project, target and scheme are `PrintTacCapture`; the installed app is named PrintTac Capture. **Xcode is needed to build the phone app, not to run the Windows desktop tools.**
 
 For tactile collection, connect the configured right/left sensor boards to the iPhone hotspot. Configure and check each board using the [magnetic capture guide](docs/HOTSPOT_MAGNETIC_CAPTURE.zh-CN.md). Pose/video recording also works with no magnetic boards connected.
 
 ### 2. Open the desktop workspace
 
-Install dependencies from the repository root using Python 3.10 or newer:
+Use **64-bit Python 3.12** for the source installation. Download/extract the repository (or clone it), then open a terminal in the folder containing `printtac.py`. Avoid installing into an existing Conda or system environment. The setup script creates `.venv`, installs the pinned dependencies from binary packages and checks video decoding, ArUco, plotting and Zarr read/write support. It can be rerun after an interrupted download.
 
-```bash
-python -m pip install -r requirements_visualizer.txt
-python printtac.py monitor --phone-ip 172.20.10.1
+**Windows 10/11, x64 — PowerShell:**
+
+Install Python 3.12 (64-bit) with its Python launcher from [python.org](https://www.python.org/downloads/release/python-31210/) (under **Files**, choose **Windows installer (64-bit)**, not the source archive), then reopen PowerShell. An existing newer 3.12 patch release also works. `py -3.12 --version` must print `Python 3.12.x`.
+
+```powershell
+# First installation (run in the extracted repository folder)
+py -3.12 scripts/setup_desktop.py
+
+# Launch after setup reports [READY]; use this command on subsequent runs too
+.\.venv\Scripts\python.exe printtac.py monitor --phone-ip 172.20.10.1
 ```
 
-`172.20.10.1` is the usual iPhone hotspot address. On a regular LAN, use the phone's actual IP. On macOS, use `python3`.
+**macOS — Terminal:**
+
+Install Python 3.12 using the [macOS universal2 installer](https://www.python.org/downloads/release/python-31210/) (under **Files**), or use an existing Python 3.12 installation, then run:
+
+```bash
+python3.12 scripts/setup_desktop.py
+./.venv/bin/python printtac.py monitor --phone-ip 172.20.10.1
+```
+
+No environment activation, administrator terminal or C/C++ compiler is needed for this installation. Always use the `.venv` interpreter to run desktop tools; bare `python`, `python3` or `py` may select a different installation. Existing platform launchers in `scripts/` also use this `.venv`.
+
+`172.20.10.1` is the usual iPhone hotspot address. On a regular LAN, use the phone's actual IP. The desktop window can open without the phone connected. For download failures, Python-version errors and an optional Qt window check, see [desktop installation and troubleshooting](docs/INSTALL_DESKTOP.md).
 
 ### 3. Record, upload and replay
 
@@ -70,31 +88,34 @@ uploads/<experiment>/
 
 ### 4. Export a dataset
 
-```bash
-python printtac.py export-zarr --capture "uploads/<experiment>" --out "dataset.zarr"
+```powershell
+.\.venv\Scripts\python.exe printtac.py export-zarr --capture "uploads/<experiment>" --out "dataset.zarr"
 ```
+
+On macOS, replace `.\.venv\Scripts\python.exe` with `./.venv/bin/python`.
 
 See the [export guide](docs/ZARR_EXPORT.md) for calibration, field definitions and action targets. Raw ARKit pose is a camera trajectory; applying it as a gripper/robot pose requires the appropriate calibration. Raw magnetic measurements are tactile observations, rather than calibrated force/torque values. Exported next-observation action targets are derived from demonstrations.
 
 ## Choose a tool
 
-The shared entry point is `python printtac.py <tool>`. Use `--help` to inspect a tool's options, and run one listener per UDP port.
+The shared entry point is `.\.venv\Scripts\python.exe printtac.py <tool>` on Windows, or `./.venv/bin/python printtac.py <tool>` on macOS. Append the tool arguments below. Use `--help` to inspect options, and run one listener per UDP port.
 
-| Goal | Command |
+| Goal | Tool arguments |
 | --- | --- |
-| Live experiments, uploads and replay | `python printtac.py monitor` |
-| View only the 3D pose trajectory | `python printtac.py visualizer` |
-| Receive pose in a terminal | `python printtac.py receiver` |
-| Run only the HTTP upload server | `python printtac.py upload-server` |
-| Receive combined pose and tactile packets | `python printtac.py magnetic-receiver` |
-| Inspect video / packet loss | `python printtac.py video-debugger` / `packet-loss` |
-| Validate a recorded trajectory | `python printtac.py validator` |
-| Open the Zarr export window | `python printtac.py zarr-exporter` |
-| Configure serial sensors / track gripper aperture | `python printtac.py anyskin-serial` / `aruco-tracker` |
+| Live experiments, uploads and replay | `monitor` |
+| View only the 3D pose trajectory | `visualizer` |
+| Receive pose in a terminal | `receiver` |
+| Run only the HTTP upload server | `upload-server` |
+| Receive combined pose and tactile packets | `magnetic-receiver` |
+| Inspect video / packet loss | `video-debugger` / `packet-loss` |
+| Validate a recorded trajectory | `validator` |
+| Open the Zarr export window | `zarr-exporter` |
+| Configure serial sensors / track gripper aperture | `anyskin-serial` / `aruco-tracker` |
+| Diagnose the desktop environment | `check-deps --gui` |
 
-```bash
-python printtac.py --help
-python printtac.py monitor --help
+```powershell
+.\.venv\Scripts\python.exe printtac.py --help
+.\.venv\Scripts\python.exe printtac.py monitor --help
 ```
 
 ## Repository map
@@ -118,6 +139,7 @@ Detailed module responsibilities are listed in the [module map](docs/REPOSITORY_
 
 | Start here | Reference |
 | --- | --- |
+| [Desktop installation and troubleshooting](docs/INSTALL_DESKTOP.md) | |
 | [iPhone installation](docs/INSTALL_IPHONE_APP.md) | [Architecture](docs/ARCHITECTURE.md) |
 | [Network and sensor setup](docs/SETUP.md) | [Packet and recording protocols](docs/PROTOCOL.md) |
 | [Magnetic capture](docs/HOTSPOT_MAGNETIC_CAPTURE.zh-CN.md) | [ArUco gripper integration](docs/ARUCO_GRIPPER_INTEGRATION.zh-CN.md) |
@@ -126,9 +148,11 @@ Detailed module responsibilities are listed in the [module map](docs/REPOSITORY_
 
 ## Development
 
-```bash
-python -m unittest discover -s tests -t .
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -t .
 ```
+
+On macOS, use `./.venv/bin/python`.
 
 On a Mac, generate the iPhone project with `xcodegen generate` from the repository root. Build desktop executables with `.\scripts\build_windows.ps1` on Windows or `bash scripts/build_macos.sh` on macOS. See [contributing](CONTRIBUTING.md) for development guidance.
 

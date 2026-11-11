@@ -2,6 +2,8 @@
 
 > 本页保留详细功能和离线标定参考。当前手机端多模态采集定位、安装步骤与入口请先阅读[中文首页](../README.zh-CN.md)。
 
+> 下文 `python` / `python3` 均指项目环境：Windows 使用 `.\.venv\Scripts\python.exe`，macOS 使用 `./.venv/bin/python`。先完成[电脑端安装](INSTALL_DESKTOP.md)。
+
 语言 / Language: [English README](../README.md) | [简体中文](README.zh-CN.md)
 
 ## 项目概览
@@ -83,7 +85,8 @@ PrintTac Capture 在 iPhone 上运行 ARKit world tracking，把相机位姿编�
 ### 依赖安装
 
 ```bash
-pip install -r requirements_visualizer.txt
+# Windows：Python 3.12；macOS 将 py -3.12 换成 python3.12
+py -3.12 scripts/setup_desktop.py
 ```
 
 当前离线标定需要的关键 Python 依赖包括：

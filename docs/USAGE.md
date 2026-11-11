@@ -2,6 +2,8 @@
 
 For the current phone-first capture workflow and installation, start with the [main README](../README.md). This guide provides detailed receiver, visualization and calibration references.
 
+After [desktop setup](INSTALL_DESKTOP.md), replace `python` / `python3` in this guide with `.\.venv\Scripts\python.exe` on Windows or `./.venv/bin/python` on macOS.
+
 <div align="center">
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)
@@ -196,7 +198,8 @@ The standalone executable includes all dependencies and doesn't require Python i
 **Install dependencies:**
 
 ```bash
-pip install -r requirements_visualizer.txt
+# Windows (Python 3.12); use python3.12 on macOS
+py -3.12 scripts/setup_desktop.py
 ```
 
 **Run the visualizer:**

@@ -141,7 +141,7 @@ class CalibrationTests(unittest.TestCase):
         self.assertAlmostEqual(scale * 0.090 + offset_m, 0.082)
 
     def test_two_point_calibration_rejects_reversed_points(self) -> None:
-        with self.assertRaisesRegex(ValueError, "原始标记距离"):
+        with self.assertRaisesRegex(ValueError, "raw marker distance"):
             calculate_distance_calibration(0.090, 0.0, 0.050, 0.080)
 
     def test_five_cycle_collection_returns_robust_endpoints(self) -> None:
@@ -157,7 +157,7 @@ class CalibrationTests(unittest.TestCase):
         self.assertAlmostEqual(summary.maximum_raw_m, 0.120, delta=0.002)
 
     def test_cycle_collection_rejects_too_little_motion(self) -> None:
-        with self.assertRaisesRegex(ValueError, "范围不足"):
+        with self.assertRaisesRegex(ValueError, "opening range is less than"):
             summarize_cyclic_calibration(np.linspace(0.0500, 0.0505, 30))
 
     def test_config_save_and_load_preserves_calibration_points(self) -> None:

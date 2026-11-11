@@ -23,10 +23,6 @@ $arguments = @(
     "--aruco-config", $ArucoConfig
 )
 
-if (Get-Command py -ErrorAction SilentlyContinue) {
-    py @arguments
-} elseif (Get-Command python -ErrorAction SilentlyContinue) {
-    python @arguments
-} else {
-    Write-Error "Python launcher not found. Install Python 3 first."
-}
+. (Join-Path $PSScriptRoot "desktop_python.ps1")
+& $PrintTacPython @arguments
+exit $LASTEXITCODE

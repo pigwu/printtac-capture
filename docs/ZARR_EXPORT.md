@@ -5,12 +5,10 @@ a Zarr v2 dataset directory compatible with the observed `dataset.zarr` layout.
 
 ## Install Dependencies
 
-```bash
-pip install -r requirements_visualizer.txt
-```
+Complete the [desktop installation](INSTALL_DESKTOP.md) first. In commands below, `python` means `.\.venv\Scripts\python.exe` on Windows or `./.venv/bin/python` on macOS.
 
 The exporter requires `zarr`, `numcodecs`, `numpy`, `scipy`, and
-`opencv-python-headless`.
+`opencv-contrib-python-headless`, all included in desktop setup.
 
 ## Basic Usage
 
