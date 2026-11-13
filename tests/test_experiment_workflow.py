@@ -34,7 +34,9 @@ from experiment_zarr import AutoZarrExporter
 class ExperimentWorkflowTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary_directory = tempfile.TemporaryDirectory()
-        self.root = Path(self.temporary_directory.name)
+        # Match the canonical paths returned by the loaders and migration code.
+        # CI temp roots can use Windows short names or macOS /var symlinks.
+        self.root = Path(self.temporary_directory.name).resolve()
         self.events: list[dict] = []
         self.server = create_upload_server(
             "127.0.0.1",

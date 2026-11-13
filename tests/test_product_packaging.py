@@ -52,7 +52,8 @@ class ProductPackagingTests(unittest.TestCase):
     def test_old_and_new_phone_video_names_remain_discoverable(self):
         for prefix in ("ARPoseStreamer", "PrintTacCapture"):
             with self.subTest(prefix=prefix), tempfile.TemporaryDirectory() as directory:
-                folder = Path(directory)
+                # discover_capture resolves OS aliases in the temporary root.
+                folder = Path(directory).resolve()
                 (folder / "pose.csv").write_text("relative_time,x,y,z,qx,qy,qz,qw\n0,0,0,0,0,0,0,1\n")
                 video = folder / f"{prefix}-recording.mp4"
                 video.write_bytes(b"video-placeholder")
